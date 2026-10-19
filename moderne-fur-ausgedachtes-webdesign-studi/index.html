@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pixelwerk – Webseiten für Vereine, Läden & Handwerk</title>
+<meta name="description" content="Pixelwerk baut klare, schnelle Webseiten für Vereine, kleine Läden und Handwerker. (Ausgedachtes Beispiel-Studio)">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0a0a0f;--bg2:#101018;--card:#14141e;--line:#262636;
+  --text:#ecebf3;--muted:#9a9ab0;--gold:#e6c27a;--violet:#8b7bff;
+  --grad:linear-gradient(120deg,#e6c27a,#c79bff 60%,#8b7bff);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:Inter,system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;overflow-x:hidden}
+h1,h2,h3{font-family:'Space Grotesk',sans-serif;line-height:1.1;letter-spacing:-.02em}
+a{color:inherit;text-decoration:none}
+.wrap{width:min(1120px,92%);margin:0 auto}
+section{padding:80px 0}
+.tag{display:inline-block;font-size:.8rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:14px}
+h2{font-size:clamp(1.9rem,5vw,3rem);margin-bottom:16px}
+.lead{color:var(--muted);max-width:620px;font-size:1.05rem}
+.grad{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+
+nav{position:fixed;top:0;left:0;right:0;z-index:50;backdrop-filter:blur(14px);background:rgba(10,10,15,.7);border-bottom:1px solid var(--line)}
+nav .wrap{display:flex;align-items:center;justify-content:space-between;height:64px}
+.logo{font-family:'Space Grotesk';font-weight:700;font-size:1.25rem;display:flex;align-items:center;gap:10px}
+.logo i{width:18px;height:18px;background:var(--grad);border-radius:4px;display:inline-block;box-shadow:6px 6px 0 -2px rgba(230,194,122,.35)}
+nav ul{display:none;list-style:none;gap:28px;color:var(--muted);font-size:.95rem}
+nav ul a:hover{color:var(--text)}
+.btn{display:inline-block;padding:13px 26px;border-radius:999px;font-weight:600;font-size:.95rem;transition:.25s;border:1px solid transparent}
+.btn.primary{background:var(--grad);color:#14101f}
+.btn.primary:hover{transform:translateY(-2px);box-shadow:0 10px 30px -8px rgba(199,155,255,.6)}
+.btn.ghost{border-color:var(--line);color:var(--text)}
+.btn.ghost:hover{border-color:var(--gold)}
+nav .btn{padding:9px 18px;font-size:.85rem}
+@media(min-width:760px){nav ul{display:flex}}
+
+.hero{padding:150px 0 90px;position:relative;overflow:hidden}
+.hero::before{content:"";position:absolute;width:600px;height:600px;right:-200px;top:-150px;background:radial-gradient(circle,rgba(139,123,255,.28),transparent 65%);pointer-events:none}
+.hero::after{content:"";position:absolute;inset:0;background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);background-size:56px 56px;opacity:.25;mask-image:radial-gradient(ellipse at 30% 30%,#000,transparent 70%);-webkit-mask-image:radial-gradient(ellipse at 30% 30%,#000,transparent 70%);pointer-events:none}
+.hero .wrap{position:relative;z-index:1}
+.hero h1{font-size:clamp(2.4rem,8vw,5rem);max-width:860px;margin-bottom:22px}
+.hero p{color:var(--muted);font-size:1.15rem;max-width:560px;margin-bottom:34px}
+.cta{display:flex;flex-wrap:wrap;gap:14px}
+.facts{display:flex;flex-wrap:wrap;gap:28px;margin-top:56px;color:var(--muted);font-size:.9rem}
+.facts b{display:block;color:var(--text);font-family:'Space Grotesk';font-size:1.1rem}
+
+.grid{display:grid;gap:18px;margin-top:44px}
+@media(min-width:700px){.grid.c2{grid-template-columns:repeat(2,1fr)}.grid.c3{grid-template-columns:repeat(3,1fr)}}
+@media(min-width:1000px){.grid.c4{grid-template-columns:repeat(4,1fr)}}
+@media(min-width:700px) and (max-width:999px){.grid.c4{grid-template-columns:repeat(2,1fr)}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:28px;transition:.3s}
+.card:hover{border-color:rgba(230,194,122,.5);transform:translateY(-4px)}
+.card .ic{font-size:1.8rem;margin-bottom:14px}
+.card h3{font-size:1.2rem;margin-bottom:8px}
+.card p{color:var(--muted);font-size:.95rem}
+
+.steps{counter-reset:s}
+.step{position:relative;padding:30px 28px 28px;background:var(--card);border:1px solid var(--line);border-radius:18px}
+.step::before{counter-increment:s;content:"0" counter(s);font-family:'Space Grotesk';font-size:3rem;font-weight:700;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;display:block;margin-bottom:6px}
+.step h3{margin-bottom:8px}.step p{color:var(--muted);font-size:.95rem}
+
+.alt{background:var(--bg2);border-block:1px solid var(--line)}
+.proj{border-radius:18px;overflow:hidden;border:1px solid var(--line);background:var(--card);transition:.3s}
+.proj:hover{transform:translateY(-4px);border-color:rgba(139,123,255,.6)}
+.shot{height:180px;position:relative;display:flex;align-items:flex-end;padding:14px}
+.shot::before{content:"";position:absolute;top:14px;left:14px;width:46px;height:8px;border-radius:4px;background:rgba(255,255,255,.25)}
+.shot span{position:relative;display:block;width:100%;height:60%;border-radius:10px;background:rgba(255,255,255,.12);backdrop-filter:blur(4px)}
+.s1{background:linear-gradient(135deg,#3a2a6b,#8b7bff)}
+.s2{background:linear-gradient(135deg,#6b4a1f,#e6c27a)}
+.s3{background:linear-gradient(135deg,#1f4a5a,#6fd0c0)}
+.proj .in{padding:22px}
+.proj small{color:var(--gold);font-size:.75rem;letter-spacing:.1em;text-transform:uppercase}
+.proj h3{margin:6px 0;font-size:1.15rem}.proj p{color:var(--muted);font-size:.92rem}
+.note{margin-top:22px;color:var(--muted);font-size:.85rem}
+
+.pack{display:flex;flex-direction:column}
+.pack.hot{border-color:var(--gold);background:linear-gradient(180deg,#1b1824,var(--card))}
+.pack .badge{align-self:flex-start;font-size:.7rem;padding:4px 10px;border-radius:99px;background:var(--grad);color:#14101f;font-weight:700;margin-bottom:12px}
+.pack .pr{font-family:'Space Grotesk';font-size:1.1rem;color:var(--gold);margin:6px 0 16px}
+.pack ul{list-style:none;margin-bottom:22px;flex:1}
+.pack li{color:var(--muted);font-size:.93rem;padding:7px 0;border-bottom:1px solid var(--line)}
+.pack li::before{content:"✓ ";color:var(--gold)}
+
+.contact{text-align:center}
+.contact .box{border:1px solid var(--line);border-radius:28px;padding:64px 24px;background:radial-gradient(ellipse at top,rgba(139,123,255,.22),transparent 60%),var(--card)}
+.contact .lead{margin:0 auto 30px}
+.ways{display:flex;flex-wrap:wrap;gap:14px;justify-content:center;margin-top:10px}
+.way{padding:14px 22px;border:1px dashed var(--line);border-radius:14px;color:var(--muted);font-size:.92rem}
+.way b{display:block;color:var(--text)}
+
+footer{padding:36px 0;color:var(--muted);font-size:.85rem;border-top:1px solid var(--line);text-align:center}
+
+.rv{opacity:0;transform:translateY(24px);transition:opacity .8s,transform .8s}
+.rv.on{opacity:1;transform:none}
+@media(prefers-reduced-motion:reduce){.rv{opacity:1;transform:none;transition:none}html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <a href="#top" class="logo"><i></i>Pixelwerk</a>
+    <ul>
+      <li><a href="#leistungen">Leistungen</a></li>
+      <li><a href="#ablauf">Ablauf</a></li>
+      <li><a href="#projekte">Projekte</a></li>
+      <li><a href="#pakete">Pakete</a></li>
+    </ul>
+    <a href="#kontakt" class="btn primary">Kontakt</a>
+  </div>
+</nav>
+
+<header class="hero" id="top">
+  <div class="wrap">
+    <span class="tag">Webdesign für den Alltag vor Ort</span>
+    <h1>Ihre Webseite. <span class="grad">Fertig gedacht,</span> sauber gebaut.</h1>
+    <p>Pixelwerk gestaltet Webseiten für Vereine, kleine Läden und Handwerksbetriebe: übersichtlich, schnell auf dem Handy und so einfach, dass Sie sich um Ihr Geschäft kümmern können.</p>
+    <div class="cta">
+      <a href="#kontakt" class="btn primary">Gespräch anfragen</a>
+      <a href="#projekte" class="btn ghost">Beispiele ansehen</a>
+    </div>
+    <div class="facts">
+      <div><b>Handy zuerst</b>Läuft auf jedem Gerät</div>
+      <div><b>Klare Sprache</b>Ohne Fachchinesisch</div>
+      <div><b>Aus einer Hand</b>Von der Idee bis online</div>
+    </div>
+  </div>
+</header>
+
+<section id="leistungen">
+  <div class="wrap">
+    <div class="rv"><span class="tag">Leistungen</span>
+    <h2>Alles, was Ihre Seite braucht.</h2>
+    <p class="lead">Wir bauen nicht irgendeine Seite, sondern die, die zu Ihnen und Ihren Kunden passt.</p></div>
+    <div class="grid c4">
+      <div class="card rv"><div class="ic">🎨</div><h3>Webdesign</h3><p>Ein eigenes Design statt Baukasten-Look, passend zu Ihrer Marke und Ihrem Ort.</p></div>
+      <div class="card rv"><div class="ic">📱</div><h3>Mobil optimiert</h3><p>Die meisten Besucher kommen per Smartphone. Darauf ist alles ausgelegt.</p></div>
+      <div class="card rv"><div class="ic">🔎</div><h3>Gefunden werden</h3><p>Saubere Technik und klare Texte, damit Sie bei der Suche vor Ort auftauchen.</p></div>
+      <div class="card rv"><div class="ic">🛠️</div><h3>Pflege & Updates</h3><p>Neue Termine, Öffnungszeiten oder Fotos? Wir kümmern uns darum.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="ablauf" class="alt">
+  <div class="wrap">
+    <div class="rv"><span class="tag">Ablauf</span>
+    <h2>In drei Schritten online.</h2>
+    <p class="lead">Ein klarer Weg ohne Überraschungen.</p></div>
+    <div class="grid c3 steps">
+      <div class="step rv"><h3>Kennenlernen</h3><p>Wir sprechen über Ihr Vorhaben, Ihre Kunden und Ihre Wünsche. Unverbindlich und ohne Druck.</p></div>
+      <div class="step rv"><h3>Gestalten</h3><p>Sie sehen einen Entwurf, geben Rückmeldung, wir feilen so lange, bis es passt.</p></div>
+      <div class="step rv"><h3>Veröffentlichen</h3><p>Wir bringen die Seite online, erklären alles in Ruhe und bleiben ansprechbar.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="projekte">
+  <div class="wrap">
+    <div class="rv"><span class="tag">Beispielprojekte</span>
+    <h2>So könnte Ihre Seite aussehen.</h2>
+    <p class="lead">Drei ausgedachte Platzhalter-Projekte, die zeigen, wie wir arbeiten würden.</p></div>
+    <div class="grid c3">
+      <article class="proj rv"><div class="shot s1"><span></span></div><div class="in"><small>Beispiel · Verein</small><h3>Sportverein „Musterstadt"</h3><p>Termine, Mannschaften und Anmeldung übersichtlich an einem Ort.</p></div></article>
+      <article class="proj rv"><div class="shot s2"><span></span></div><div class="in"><small>Beispiel · Laden</small><h3>Bäckerei „Goldkruste"</h3><p>Öffnungszeiten, Sortiment und Wochenangebote auf einen Blick.</p></div></article>
+      <article class="proj rv"><div class="shot s3"><span></span></div><div class="in"><small>Beispiel · Handwerk</small><h3>Schreinerei „Holzgeist"</h3><p>Referenzen, Leistungen und eine klare Anfrage-Möglichkeit.</p></div></article>
+    </div>
+    <p class="note">Alle Namen und Projekte sind frei erfunden und dienen nur als Platzhalter.</p>
+  </div>
+</section>
+
+<section id="pakete" class="alt">
+  <div class="wrap">
+    <div class="rv"><span class="tag">Pakete</span>
+    <h2>Drei Wege, ein Ziel.</h2>
+    <p class="lead">Preise besprechen wir persönlich, passend zu Umfang und Wunsch.</p></div>
+    <div class="grid c3">
+      <div class="card pack rv"><h3>Start</h3><div class="pr">Preis auf Anfrage</div>
+        <ul><li>Einseitige Visitenkarten-Seite</li><li>Mobil optimiert</li><li>Kontaktmöglichkeiten</li></ul>
+        <a href="#kontakt" class="btn ghost">Anfragen</a></div>
+      <div class="card pack hot rv"><span class="badge">Beliebt</span><h3>Plus</h3><div class="pr">Preis auf Anfrage</div>
+        <ul><li>Mehrere Unterseiten</li><li>Individuelles Design</li><li>Grundlegende Suchmaschinen-Optimierung</li><li>Einweisung für Sie</li></ul>
+        <a href="#kontakt" class="btn primary">Anfragen</a></div>
+      <div class="card pack rv"><h3>Rundum</h3><div class="pr">Preis auf Anfrage</div>
+        <ul><li>Alles aus Plus</li><li>Laufende Pflege</li><li>Texte und Strukturberatung</li></ul>
+        <a href="#kontakt" class="btn ghost">Anfragen</a></div>
+    </div>
+  </div>
+</section>
+
+<section id="kontakt" class="contact">
+  <div class="wrap">
+    <div class="box rv">
+      <span class="tag">Kontakt</span>
+      <h2>Bereit für <span class="grad">Ihren Auftritt?</span></h2>
+      <p class="lead">Erzählen Sie uns von Ihrem Verein, Laden oder Betrieb. Wir melden uns und besprechen alles Weitere in Ruhe.</p>
+      <div class="ways">
+        <div class="way"><b>E-Mail</b>hallo@beispiel-pixelwerk.example</div>
+        <div class="way"><b>Telefon</b>(Platzhalter, keine echte Nummer)</div>
+        <div class="way"><b>Erreichbar</b>Werktags, nach Absprache</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">© <span id="y"></span> Pixelwerk · Ausgedachtes Beispiel-Studio, alle Angaben sind Platzhalter.</div>
+</footer>
+
+<script>
+document.getElementById('y').textContent=new Date().getFullYear();
+const io=new IntersectionObserver(e=>e.forEach(x=>{if(x.isIntersecting){x.target.classList.add('on');io.unobserve(x.target)}}),{threshold:.12});
+document.querySelectorAll('.rv').forEach((el,i)=>{el.style.transitionDelay=(i%4)*80+'ms';io.observe(el)});
+</script>
+</body>
+</html>
