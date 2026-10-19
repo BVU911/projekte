@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Projekte · Ben-Vincent</title>
+<meta name="description" content="Webseiten und Apps aus Ben-Vincents Werkstatt, gebaut mit seinem KI-Assistenten Jarvis.">
+<meta property="og:title" content="Projekte · Ben-Vincent">
+<meta property="og:description" content="Webseiten und Apps aus meiner Werkstatt, gebaut mit meinem KI-Assistenten Jarvis.">
+<meta name="theme-color" content="#0A0805">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2317130F'/%3E%3Cpath d='M18 44V20h10a8 8 0 0 1 0 16h-10' fill='none' stroke='%23D48466' stroke-width='6'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root { --deep: #0A0805; --dark: #17130F; --raised: #1B1612; --terra: #C26B4C; --glow: #D48466; --tdeep: #6E3726;
+          --cream: #F2E8DC; --muted: #C9BDAF; --dim: #8C8479; --line: color-mix(in srgb, var(--tdeep) 35%, transparent); }
+  * { box-sizing: border-box; margin: 0; }
+  body { background: var(--deep); color: var(--cream); font: 400 16px/1.6 Inter, system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+  .wrap { max-width: 1040px; margin: 0 auto; padding: 0 20px; }
+  header { padding: 72px 0 36px; }
+  .eyebrow { font: 500 11.5px "JetBrains Mono", monospace; letter-spacing: .14em; text-transform: uppercase; color: var(--glow); }
+  h1 { font: 700 clamp(40px, 9vw, 72px) "Space Grotesk", sans-serif; letter-spacing: -.045em; line-height: 1.02; margin: 10px 0 14px; }
+  header p { color: var(--muted); max-width: 560px; font-size: 17px; }
+  header a { color: var(--glow); text-decoration: none; border-bottom: 1px solid var(--line); }
+  .grid { display: grid; grid-template-columns: 1fr; gap: 14px; padding-bottom: 60px; }
+  .card { display: flex; flex-direction: column; gap: 8px; padding: 22px; border-radius: 18px; text-decoration: none; color: inherit;
+          background: linear-gradient(180deg, var(--raised), var(--dark)); border: 1px solid var(--line); transition: transform .2s, border-color .2s; }
+  .card:hover { transform: translateY(-2px); border-color: color-mix(in srgb, var(--terra) 60%, transparent); }
+  .card .meta { display: flex; justify-content: space-between; font: 500 11px "JetBrains Mono", monospace; letter-spacing: .1em; color: var(--dim); text-transform: uppercase; }
+  .card h2 { font: 700 22px "Space Grotesk", sans-serif; letter-spacing: -.02em; }
+  .card p { color: var(--muted); font-size: 14.5px; flex: 1; }
+  .card .go { font: 500 13px Inter, sans-serif; color: var(--glow); }
+  .leer { padding: 40px; border: 1px dashed var(--line); border-radius: 18px; color: var(--dim); text-align: center; }
+  footer { border-top: 1px solid var(--line); padding: 26px 0 40px; color: var(--dim); font-size: 13px; }
+  @media (min-width: 720px) { .grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (min-width: 1000px) { .grid { grid-template-columns: repeat(3, 1fr); } }
+</style>
+</head>
+<body>
+<header><div class="wrap">
+  <span class="eyebrow">Werkstatt</span>
+  <h1>Projekte.</h1>
+  <p>Webseiten und Apps, die ich mit meinem KI-Assistenten <a href="https://bvu911.github.io/jarvis-ki/">Jarvis</a> gebaut habe. Ich beschreibe die Idee, Jarvis setzt sie um.</p>
+</div></header>
+<main class="wrap"><div class="grid" id="grid"><div class="leer">Die ersten Projekte entstehen gerade.</div></div></main>
+<footer><div class="wrap">Ben-Vincent · gebaut mit Jarvis und Claude Code</div></footer>
+<script>
+  const esc = (s) => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  fetch('projekte.json?' + Date.now()).then(r => r.json()).then(list => {
+    if (!list.length) return;
+    document.getElementById('grid').innerHTML = list.map(p => `
+      <a class="card" href="${esc(p.slug)}/">
+        <span class="meta"><span>${esc(p.art || 'Webseite')}</span><span>${esc(p.datum)}</span></span>
+        <h2>${esc(p.titel)}</h2>
+        <p>${esc(p.beschreibung)}</p>
+        <span class="go">Ansehen →</span>
+      </a>`).join('');
+  }).catch(() => {});
+</script>
+</body>
+</html>
