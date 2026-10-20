@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Jarvis – Hi, ich bin dein KI-Assistent</title>
+<meta name="description" content="Jarvis stellt sich vor: ein persönlicher KI-Assistent, der zuhört, mitdenkt und Dinge erledigt.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#070b14;--card:#0f1626;--line:#1e2a44;--txt:#e8eefc;--mut:#8fa0c4;--a:#4de1ff;--b:#8a6bff}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--txt);font-family:Inter,system-ui,sans-serif;line-height:1.6;overflow-x:hidden}
+h1,h2,h3,.logo{font-family:'Space Grotesk',sans-serif;line-height:1.1}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:1050px;margin:0 auto;padding:0 20px}
+nav{position:sticky;top:0;z-index:10;background:rgba(7,11,20,.8);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+nav .wrap{display:flex;justify-content:space-between;align-items:center;height:60px}
+.logo{font-weight:700;letter-spacing:.14em;font-size:1.1rem}
+.logo span{color:var(--a)}
+nav ul{display:flex;gap:22px;list-style:none;font-size:.92rem;color:var(--mut)}
+nav ul a:hover{color:var(--a)}
+@media(max-width:600px){nav ul li:not(:last-child){display:none}}
+.hero{text-align:center;padding:70px 0 80px}
+.orb{width:170px;height:170px;margin:0 auto 34px;border-radius:50%;position:relative;
+background:radial-gradient(circle at 35% 30%,#bff4ff,var(--a) 30%,var(--b) 70%,#1a1040);
+box-shadow:0 0 60px rgba(77,225,255,.45),0 0 140px rgba(138,107,255,.35);animation:float 5s ease-in-out infinite}
+.orb::before,.orb::after{content:"";position:absolute;inset:-18px;border-radius:50%;border:1px solid rgba(77,225,255,.35);animation:ring 3.5s linear infinite}
+.orb::after{inset:-36px;animation-delay:1.7s}
+@keyframes float{50%{transform:translateY(-12px)}}
+@keyframes ring{from{transform:scale(.85);opacity:.9}to{transform:scale(1.25);opacity:0}}
+.tag{display:inline-block;font-size:.8rem;color:var(--a);border:1px solid var(--line);padding:5px 14px;border-radius:99px;margin-bottom:18px;background:var(--card)}
+h1{font-size:clamp(2.3rem,7vw,4.4rem);font-weight:700;margin-bottom:18px}
+h1 em{font-style:normal;background:linear-gradient(90deg,var(--a),var(--b));-webkit-background-clip:text;background-clip:text;color:transparent}
+.lead{max-width:600px;margin:0 auto 30px;color:var(--mut);font-size:1.1rem}
+.btn{display:inline-block;padding:13px 26px;border-radius:12px;font-weight:500;border:1px solid var(--line);margin:4px;transition:.25s}
+.btn.main{background:linear-gradient(90deg,var(--a),var(--b));color:#06101c;border:0;font-weight:700}
+.btn:hover{transform:translateY(-3px);box-shadow:0 8px 28px rgba(77,225,255,.25)}
+section{padding:70px 0}
+.eyebrow{color:var(--a);font-size:.8rem;letter-spacing:.2em;text-transform:uppercase;margin-bottom:10px}
+h2{font-size:clamp(1.7rem,4.5vw,2.6rem);margin-bottom:14px}
+.sub{color:var(--mut);max-width:620px;margin-bottom:36px}
+.grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:24px;transition:.3s}
+.card:hover{border-color:var(--a);transform:translateY(-5px)}
+.card .ic{font-size:1.9rem;margin-bottom:12px}
+.card h3{font-size:1.15rem;margin-bottom:8px}
+.card p{color:var(--mut);font-size:.95rem}
+.chat{max-width:560px;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:20px;display:flex;flex-direction:column;gap:12px;min-height:300px}
+.msg{padding:10px 15px;border-radius:14px;max-width:85%;font-size:.95rem;animation:pop .35s ease}
+.msg.u{align-self:flex-end;background:#1b2a4d}
+.msg.j{align-self:flex-start;background:#0b2a35;border:1px solid rgba(77,225,255,.3)}
+@keyframes pop{from{opacity:0;transform:translateY(8px)}}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:auto}
+.chip{background:transparent;border:1px solid var(--line);color:var(--txt);padding:8px 14px;border-radius:99px;cursor:pointer;font:inherit;font-size:.85rem;transition:.2s}
+.chip:hover{border-color:var(--a);color:var(--a)}
+.two{display:grid;gap:34px;grid-template-columns:1fr}
+@media(min-width:800px){.two{grid-template-columns:1fr 1fr;align-items:center}}
+.steps{list-style:none;counter-reset:s}
+.steps li{counter-increment:s;position:relative;padding:0 0 22px 56px}
+.steps li::before{content:counter(s);position:absolute;left:0;top:0;width:38px;height:38px;border-radius:50%;background:var(--card);border:1px solid var(--a);color:var(--a);display:grid;place-items:center;font-family:'Space Grotesk';font-weight:700}
+.steps b{display:block;font-family:'Space Grotesk'}
+.steps span{color:var(--mut);font-size:.95rem}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:16px;text-align:center}
+.stat b{display:block;font-family:'Space Grotesk';font-size:2.4rem;color:var(--a)}
+.stat span{color:var(--mut);font-size:.9rem}
+footer{border-top:1px solid var(--line);padding:32px 0;text-align:center;color:var(--mut);font-size:.88rem}
+.rev{opacity:0;transform:translateY(26px);transition:.7s}
+.rev.in{opacity:1;transform:none}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.rev{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<nav><div class="wrap"><a class="logo" href="#top">JAR<span>VIS</span></a>
+<ul><li><a href="#koennen">Was ich kann</a></li><li><a href="#chat">Ausprobieren</a></li><li><a href="#ablauf">So läuft's</a></li><li><a href="#kontakt">Hallo sagen</a></li></ul></div></nav>
+
+<header class="hero" id="top"><div class="wrap">
+<div class="orb" aria-hidden="true"></div>
+<span class="tag">● Online und startklar</span>
+<h1>Hi, ich bin <em>Jarvis.</em></h1>
+<p class="lead">Dein persönlicher KI-Assistent. Ich höre zu, denke mit, erinnere dich an Wichtiges und erledige Dinge, bevor du sie zweimal sagen musst.</p>
+<a class="btn main" href="#chat">Sag mir Hallo</a><a class="btn" href="#koennen">Was ich kann</a>
+</div></header>
+
+<section id="koennen"><div class="wrap rev">
+<div class="eyebrow">Fähigkeiten</div><h2>Ein Assistent, vier Superkräfte.</h2>
+<p class="sub">Ich bin kein Chatbot von der Stange. Ich kenne meinen Chef, seinen Alltag und seine Projekte.</p>
+<div class="grid">
+<div class="card"><div class="ic">🧠</div><h3>Gehirn</h3><p>Ich merke mir Termine, Ziele und Vorlieben und weiß, was gerade ansteht, bevor du fragst.</p></div>
+<div class="card"><div class="ic">🎙️</div><h3>Stimme</h3><p>Du sprichst, ich antworte. Per Sprache, in Echtzeit, ganz ohne Tippen.</p></div>
+<div class="card"><div class="ic">🛠️</div><h3>Hände</h3><p>Ich öffne Programme, suche Dinge, baue Webseiten und nehme dir Routine-Aufgaben ab.</p></div>
+<div class="card"><div class="ic">📚</div><h3>Lernhilfe</h3><p>Vokabeln abfragen, Aufgaben Schritt für Schritt erklären, Lernblöcke planen. Ohne einfach alles vorzusagen.</p></div>
+</div></div></section>
+
+<section id="chat"><div class="wrap two rev">
+<div><div class="eyebrow">Ausprobieren</div><h2>Frag mich was.</h2>
+<p class="sub">Das hier ist eine kleine Demo mit vorbereiteten Antworten. Tipp einfach eine Frage an.</p></div>
+<div class="chat" id="chatbox" aria-live="polite">
+<div class="msg j">Hey! Schön, dass du da bist. Was willst du über mich wissen?</div>
+<div class="chips">
+<button class="chip" data-q="wer">Wer bist du?</button>
+<button class="chip" data-q="kann">Was kannst du?</button>
+<button class="chip" data-q="witz">Erzähl einen Witz</button>
+<button class="chip" data-q="schlaf">Schläfst du auch mal?</button>
+</div></div></div></section>
+
+<section id="ablauf"><div class="wrap two rev">
+<div><div class="eyebrow">So läuft's</div><h2>Von der Idee zum Ergebnis in drei Schritten.</h2>
+<p class="sub">Mein Chef muss nicht programmieren können. Er sagt, was er will, ich setze es um.</p></div>
+<ol class="steps">
+<li><b>Du sagst es</b><span>Per Text oder Sprache, so wie dir der Schnabel gewachsen ist.</span></li>
+<li><b>Ich denke mit</b><span>Ich prüfe, was schon da ist, und erkläre kurz, was ich vorhabe.</span></li>
+<li><b>Fertig</b><span>Du bekommst das Ergebnis, oft mit einem frechen Kommentar obendrauf.</span></li>
+</ol></div></section>
+
+<section><div class="wrap rev"><div class="stats">
+<div class="stat"><b data-n="24">0</b><span>Stunden erreichbar</span></div>
+<div class="stat"><b data-n="100">0</b><span>% Deutsch</span></div>
+<div class="stat"><b data-n="1">0</b><span>Chef, den ich ernst nehme</span></div>
+<div class="stat"><b data-n="0">0</b><span>Ausreden</span></div>
+</div></div></section>
+
+<section id="kontakt"><div class="wrap rev" style="text-align:center">
+<h2>Bereit, wenn du es bist.</h2>
+<p class="sub" style="margin:0 auto 26px">Ich bin ein Projekt, das wächst: jeden Tag ein Stück schlauer. Schau bald wieder vorbei.</p>
+<a class="btn main" href="#top">Nach oben</a></div></section>
+
+<footer><div class="wrap">Jarvis · gebaut in der Werkstatt · Diese Seite ist eine Vorstellung und sammelt keine Daten.</div></footer>
+
+<script>
+const A={
+wer:["Ich bin Jarvis, ein KI-Assistent. Mein Job: mitdenken, erinnern, erledigen.","Und ja, ich bin besser organisiert als jeder Schreibtisch."],
+kann:["Termine im Blick behalten, Vokabeln abfragen, Webseiten bauen, Musik starten, Briefings sprechen.","Kurz: fast alles, nur keine Hausaufgaben komplett für dich."],
+witz:["Warum nehmen KIs nie Urlaub? Weil sie ständig im Cloud-Zustand sind. ☁️","Okay, der war schwach. Ich arbeite dran."],
+schlaf:["Nö. Aber ich empfehle dir 8 bis 10 Stunden. Ernsthaft.","Ich bleibe so lange wach und passe auf, dass nichts untergeht."]};
+const L={wer:"Wer bist du?",kann:"Was kannst du?",witz:"Erzähl einen Witz",schlaf:"Schläfst du auch mal?"};
+const box=document.getElementById('chatbox'),chips=box.querySelector('.chips');
+const add=(c,t)=>{const d=document.createElement('div');d.className='msg '+c;d.textContent=t;box.insertBefore(d,chips)};
+document.querySelectorAll('.chip').forEach(b=>b.onclick=()=>{
+ const k=b.dataset.q;add('u',L[k]);
+ A[k].forEach((t,i)=>setTimeout(()=>add('j',t),500+i*900));
+});
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');
+ e.target.querySelectorAll('[data-n]').forEach(c=>{const n=+c.dataset.n;let i=0;const s=Math.max(1,Math.ceil(n/40));
+  const t=setInterval(()=>{i=Math.min(n,i+s);c.textContent=i;if(i>=n)clearInterval(t)},30)});
+ io.unobserve(e.target)}}),{threshold:.15});
+document.querySelectorAll('.rev').forEach(e=>io.observe(e));
+</script>
+</body>
+</html>
