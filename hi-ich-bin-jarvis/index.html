@@ -12,7 +12,7 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230e0a08'/%3E%3Ccircle cx='16' cy='16' r='9' fill='%23ff6a3d'/%3E%3Ccircle cx='13' cy='13' r='3.5' fill='%23ffe9d6' opacity='.7'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;800&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Inter:wght@400;600&display=swap" rel="stylesheet">
 <!--
   KONZEPT-BRIEFING
   Ziel: Jarvis stellt sich selbst vor, in der Ich-Form, mit Attitude. Zielgruppe: jeder, der staunen soll.
@@ -42,7 +42,7 @@
   *, *::before, *::after { box-sizing: border-box; }
   html, body { margin: 0; }
   body { background: var(--bg); color: var(--fg); font: 400 clamp(16px, 1.1vw + 8px, 18px)/1.65 var(--text); overflow-x: hidden; -webkit-font-smoothing: antialiased; }
-  h1, h2, h3 { font-family: var(--display); font-weight: 800; letter-spacing: -.035em; line-height: .95; margin: 0; text-wrap: balance; hyphens: auto; }
+  h1, h2, h3 { font-family: var(--display); font-optical-sizing: auto; font-weight: 800; letter-spacing: -.035em; line-height: .95; margin: 0; text-wrap: balance; hyphens: auto; }
   h2 { font-size: clamp(2.5rem, 6.4vw, 6rem); }
   h3 { font-size: clamp(1.6rem, 2.6vw, 2.4rem); letter-spacing: -.025em; }
   p { margin: 0; }
@@ -60,13 +60,12 @@
   .wort.ak { color: var(--akzent); }
 
   /* Körnung */
-  .koernung { position: fixed; inset: -50%; z-index: 60; pointer-events: none; opacity: .06; animation: koernung 1s steps(6) infinite;
+  .koernung { position: fixed; inset: 0; z-index: 60; pointer-events: none; opacity: .05;
     background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>"); }
   @keyframes koernung { 0%, 100% { transform: translate(0, 0); } 20% { transform: translate(-3%, 2%); } 40% { transform: translate(2%, -3%); } 60% { transform: translate(-2%, -1%); } 80% { transform: translate(3%, 3%); } }
 
   /* Cursor */
-  .cursor { position: fixed; left: 0; top: 0; width: 14px; height: 14px; margin: -7px 0 0 -7px; border-radius: 50%; background: #fff; z-index: 70; pointer-events: none;
-    mix-blend-mode: difference; transition: width .3s var(--ease), height .3s var(--ease), margin .3s var(--ease); display: none; }
+  .cursor { position: fixed; left: 0; top: 0; width: 14px; height: 14px; margin: -7px 0 0 -7px; border-radius: 50%; background: var(--akzent); opacity: .85; z-index: 70; pointer-events: none; transition: width .3s var(--ease), height .3s var(--ease), margin .3s var(--ease); display: none; }
   .cursor.gross { width: 64px; height: 64px; margin: -32px 0 0 -32px; }
   @media (hover: hover) and (pointer: fine) { .cursor { display: block; } }
 
@@ -76,7 +75,10 @@
   .nav { transition: background .4s var(--ease), backdrop-filter .4s var(--ease), padding .4s var(--ease), transform .5s var(--ease), color .3s; }
   .nav.weg { transform: translateY(-110%); }
   .nav.hell { color: #17110d; }
-  .nav.hell .menue { border-color: rgba(23,17,13,.3); } .nav.hell .menue span { background: #17110d; }
+  .logo { padding: 0 16px 0 4px; border-radius: 999px; background: rgba(14, 10, 8, .55); }
+  .nav.hell .logo { background: rgba(243, 236, 226, .9); }
+  .nav.verglast .logo { background: transparent; }
+  .nav.hell .menue { border-color: rgba(23,17,13,.3); background: rgba(243,236,226,.9); } .nav.hell .menue span { background: #17110d; }
   .nav.hell.verglast { background: rgba(243, 236, 226, .92); }
   .nav.verglast { background: rgba(14, 10, 8, .82); backdrop-filter: blur(14px) saturate(1.4); -webkit-backdrop-filter: blur(14px) saturate(1.4); padding-block: 12px; }
   .logo { display: inline-flex; align-items: center; gap: 10px; font: 800 1.25rem/1 var(--display); letter-spacing: -.02em; text-decoration: none; min-height: 44px; }
@@ -86,7 +88,8 @@
   .nav-links a { text-decoration: none; font-weight: 600; font-size: .92rem; position: relative; padding: 12px 0; }
   .nav-links a::after { content: ""; position: absolute; left: 0; right: 0; bottom: 8px; height: 1.5px; background: var(--akzent); transform: scaleX(0); transform-origin: left; transition: transform .35s var(--ease); }
   .nav-links a:hover::after { transform: scaleX(1); }
-  .menue { display: none; width: 48px; height: 48px; border-radius: 50%; border: 1px solid var(--linie); background: transparent; cursor: pointer; place-items: center; }
+  .menue { display: none; width: 48px; height: 48px; border-radius: 50%; border: 1px solid var(--linie); background: rgba(14, 10, 8, .55); cursor: pointer; place-items: center; }
+  .nav.hell .menue { background: rgba(243, 236, 226, .9); }
   .menue span { display: block; width: 18px; height: 1.5px; background: var(--fg); margin: 3px auto; transition: transform .3s var(--ease); }
   .menue[aria-expanded="true"] span:first-child { transform: translateY(2.2px) rotate(45deg); }
   .menue[aria-expanded="true"] span:last-child { transform: translateY(-2.2px) rotate(-45deg); }
@@ -102,7 +105,7 @@
 
   /* Hero */
   .hero { min-height: 100svh; display: grid; align-items: end; padding: 140px var(--rand) clamp(40px, 9vh, 90px); position: relative; }
-  .hero h1 { font-size: clamp(3.6rem, 12.5vw, 11.5rem); max-width: 11ch; line-height: .88; letter-spacing: -.045em; }
+  .hero h1 { font-size: clamp(3.6rem, 12vw, 11rem); max-width: 8.5ch; font-family: var(--display); font-weight: 800; line-height: .88; letter-spacing: -.045em; }
   .lead { max-width: 44ch; color: var(--muted); font-size: clamp(1.02rem, 1.4vw, 1.3rem); margin-top: 28px; }
   .lead b { color: var(--fg); font-weight: 600; }
   .knopf { display: inline-flex; align-items: center; gap: 12px; margin-top: 34px; padding: 0 30px; min-height: 56px; border-radius: 999px; border: 0; cursor: pointer;
@@ -112,7 +115,7 @@
   .hinweis i { display: block; width: 1.5px; height: 56px; background: var(--linie); position: relative; overflow: hidden; }
   .hinweis i::after { content: ""; position: absolute; left: 0; top: 0; width: 100%; height: 40%; background: var(--akzent); animation: fall 2s var(--ease) infinite; }
   @keyframes fall { from { transform: translateY(-100%); } to { transform: translateY(260%); } }
-  @media (max-width: 760px) { .hinweis { display: none; } .hero { padding-top: 120px; } }
+  @media (max-width: 760px) { .hinweis { display: none; } .hero { padding-top: 120px; } .hero > div { padding-top: 32px; } .hero h1 { max-width: 9ch; } .kicker { margin-bottom: 18px; } }
 
   /* Verwandlung (gepinnt) */
   .morph { position: relative; min-height: 100svh; }
@@ -130,7 +133,8 @@
   @media (max-width: 760px) {
     .morph { min-height: 0; }
     .rahmen { display: block; min-height: 0; padding: 0; }
-    .panel { min-height: 78svh; display: flex; flex-direction: column; justify-content: flex-end; padding: 40px var(--rand); background: linear-gradient(to top, rgba(14, 10, 8, .95) 55%, rgba(14, 10, 8, 0)); }
+    .panel { min-height: 62svh; display: flex; flex-direction: column; justify-content: flex-end; padding: 32px var(--rand) 36px; background: linear-gradient(to top, rgba(14, 10, 8, .9) 62%, rgba(14, 10, 8, 0)); }
+    .panel h2 { font-size: clamp(2rem, 9vw, 2.6rem); margin-bottom: 14px; }
   }
 
   /* Laufband */
@@ -180,10 +184,13 @@
 
   /* Charakter (Bento) */
   .charakter { background: radial-gradient(60% 50% at 15% 20%, rgba(255, 106, 61, .16), transparent 70%), radial-gradient(50% 60% at 90% 80%, rgba(122, 31, 10, .3), transparent 70%), var(--bg); }
-  .charakter h2 { max-width: 12ch; }
-  .bento { display: grid; grid-template-columns: repeat(12, 1fr); gap: clamp(14px, 2vw, 26px); margin-top: clamp(40px, 6vw, 80px); }
+  .charakter h2 { max-width: 9ch; }
+  .bento-kopf { grid-column: span 7; align-self: end; padding-bottom: 8px; }
+  .bento-kopf .kicker { margin-bottom: 22px; }
+  .kachel.preis { transform: translateY(clamp(0px, 3vw, 40px)); }
+  .bento { display: grid; grid-template-columns: repeat(12, 1fr); gap: clamp(14px, 2vw, 26px); }
   .kachel { grid-column: span 4; min-height: 280px; border-radius: var(--r); padding: clamp(22px, 2.4vw, 34px); background: rgba(243, 236, 226, .04); border: 1px solid var(--linie);
-    display: flex; flex-direction: column; justify-content: space-between; gap: 24px; position: relative; overflow: hidden; backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
+    display: flex; flex-direction: column; justify-content: space-between; gap: 24px; position: relative; overflow: hidden; }
   .kachel.gross { grid-column: span 7; }
   .kachel.mittel { grid-column: span 5; }
   .kachel.hell { background: var(--creme); color: #17110d; border-color: transparent; }
@@ -198,7 +205,7 @@
   .geraete { display: flex; gap: 18px; align-items: flex-end; }
   .geraete svg { stroke: var(--akzent-tief); fill: none; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
   .null { font: 800 clamp(4rem, 9vw, 8rem)/.85 var(--display); letter-spacing: -.05em; color: var(--akzent); }
-  @media (max-width: 900px) { .kachel, .kachel.gross, .kachel.mittel { grid-column: span 12; min-height: 230px; } }
+  @media (max-width: 900px) { .bento-kopf, .kachel, .kachel.gross, .kachel.mittel { grid-column: span 12; min-height: 230px; } .bento-kopf { min-height: 0; margin-bottom: 14px; } .kachel.preis { transform: none; } }
 
   /* Galerie */
   .galerie { background: var(--creme); color: #17110d; padding: clamp(80px, 11vh, 120px) 0 clamp(50px, 8vh, 100px); overflow: hidden; }
@@ -207,6 +214,13 @@
   .spur { display: flex; gap: clamp(16px, 2vw, 28px); padding-inline: var(--rand); width: max-content; }
   .karte { width: min(78vw, 480px); border-radius: 30px; padding: clamp(24px, 2.6vw, 36px); background: #17110d; color: var(--creme); display: flex; flex-direction: column; gap: 20px; min-height: 410px; justify-content: space-between; position: relative; overflow: hidden; }
   .karte.akz { background: var(--akzent); color: #1a0a04; }
+  .spur { align-items: center; }
+  .karte.k2 { min-height: 340px; } .karte.k3 { min-height: 470px; } .karte.k4 { min-height: 390px; }
+  .karte.breit { width: min(86vw, 780px); display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: auto 1fr auto; column-gap: 28px; align-content: stretch; }
+  .karte.breit .gr { grid-column: 2; grid-row: 1; } .karte.breit .motiv { grid-column: 1; grid-row: 1 / 4; height: 100%; min-height: 300px; }
+  .karte.breit .kopf { grid-column: 2; grid-row: 2; align-self: center; } .karte.breit ul { grid-column: 2; grid-row: 3; }
+  .gz { font: 800 clamp(2rem, 3.2vw, 3rem)/.98 var(--display); letter-spacing: -.035em; color: var(--creme); }
+  .gz em { font-style: normal; color: var(--akzent); }
   .karte .gr { font: 600 .72rem/1 var(--text); letter-spacing: .16em; color: var(--akzent); }
   .karte.akz .gr { color: #1a0a04; }
   .karte .kopf svg { width: 38px; height: 38px; stroke: var(--akzent); fill: none; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; flex: none; }
@@ -243,6 +257,7 @@
     .spur { width: auto; overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: 12px; }
     .karte { flex: none; scroll-snap-align: start; width: 82vw; min-height: 380px; }
     .karte li:nth-child(3) { display: none; }
+    .karte.breit { display: flex; width: 82vw; } .karte.breit .motiv { height: 112px; min-height: 0; } .karte.k3, .karte.k4 { min-height: 380px; }
   }
 
   /* Herkunft */
@@ -257,8 +272,8 @@
   @media (max-width: 760px) { .zahlen { grid-template-columns: 1fr 1fr; row-gap: 40px; } }
 
   /* Schluss */
-  .schluss { background: var(--bg); padding: var(--abstand) var(--rand) 40px; overflow: hidden; }
-  .schluss h2 { font-size: clamp(3rem, 9vw, 9rem); max-width: 12ch; line-height: .9; }
+  .schluss { background: var(--bg); padding: calc(var(--abstand) + 40px) var(--rand) 40px; overflow: hidden; }
+  .schluss h2 { scroll-margin-top: 120px; font-size: clamp(3rem, 9vw, 9rem); max-width: 12ch; line-height: .9; }
   .partikel { height: clamp(170px, 26vw, 360px); margin-top: clamp(30px, 5vw, 60px); }
   .partikel canvas { width: 100%; height: 100%; display: block; }
   .gross-knopf { min-height: 72px; padding: 0 44px; font-size: 1.15rem; box-shadow: 0 0 0 0 rgba(255,106,61,.5); animation: ring 2.4s ease-out infinite; }
@@ -266,7 +281,7 @@
   .fuss { display: flex; justify-content: space-between; gap: 20px; flex-wrap: wrap; border-top: 1px solid var(--linie); margin-top: 40px; padding-top: 24px; font-size: .85rem; color: var(--muted); }
 
   @media (prefers-reduced-motion: reduce) {
-    .koernung, .hinweis i::after, .wellen i, .kugel-gross, .logo i, .m-ring.v, .m-karte, .push, .scan, .balkenreihe i, .term .cur, .gross-knopf { animation: none; }
+    .hinweis i::after, .wellen i, .kugel-gross, .logo i, .m-ring.v, .m-karte, .push, .scan, .balkenreihe i, .term .cur, .gross-knopf { animation: none; }
     .m-ring.v { stroke-dashoffset: 60; }
     .wellen i { transform: scaleY(.6); }
     * { scroll-behavior: auto !important; }
@@ -295,7 +310,7 @@
   <div class="buehne" id="buehne">
     <header class="hero">
       <div>
-        <span class="kicker">Persönlicher KI-Assistent, Jahrgang 2026</span>
+        <span class="kicker">KI-Assistent, Jahrgang 2026</span>
         <h1 data-split>Hi. Ich bin *Jarvis.*</h1>
         <p class="lead" data-einblenden>Mein Chef hat mich selbst gebaut. Ich bin <b>kurz, direkt und manchmal frech</b>, aber immer kompetent. Schau mir mal beim Denken zu.</p>
         <a class="knopf" href="#sprich" data-magnet data-einblenden>Sag mir was <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
@@ -357,9 +372,13 @@
   </section>
 
   <section class="abschnitt charakter" aria-label="Charakter">
-    <span class="kicker">Charakter</span>
-    <h2 data-zeilen>Butler mit Attitude.</h2>
     <div class="bento">
+      <div class="bento-kopf"><span class="kicker">Charakter</span><h2 data-zeilen>Butler mit Attitude.</h2></div>
+      <article class="kachel mittel preis" data-clip data-tilt>
+        <span class="kicker" style="margin:0">Mein Preis</span>
+        <div class="null">0 €</div>
+        <p>Kein Firmenprodukt, nichts zu kaufen. Nur ein Projekt.</p>
+      </article>
       <article class="kachel gross" data-clip>
         <span class="kicker" style="margin:0">Mein Ton</span>
         <div class="zitat">Ja, Master.</div>
@@ -370,23 +389,18 @@
         <div class="wellen" aria-hidden="true"></div>
         <p>Sie heißt „Charon“ und antwortet in Echtzeit.</p>
       </article>
-      <article class="kachel" data-clip data-tilt>
+      <article class="kachel mittel" data-clip data-tilt>
         <span class="kicker" style="margin:0">Mein Gesicht</span>
         <div class="kugel-gross" aria-hidden="true"></div>
         <p>Eine leuchtende Partikel-Kugel in Terrakotta-Orange.</p>
       </article>
-      <article class="kachel hell" data-clip data-tilt>
+      <article class="kachel hell gross" data-clip data-tilt>
         <span class="kicker" style="margin:0">Ich laufe auf</span>
         <div class="geraete" aria-hidden="true">
           <svg width="120" height="84" viewBox="0 0 120 84"><rect x="14" y="8" width="92" height="56" rx="6"/><path d="M4 74h112M46 74l3-10h22l3 10"/></svg>
           <svg width="46" height="84" viewBox="0 0 46 84"><rect x="6" y="6" width="34" height="72" rx="8"/><path d="M19 70h8"/></svg>
         </div>
         <p>Laptop-Cockpit und iPhone-App. Überall derselbe Jarvis.</p>
-      </article>
-      <article class="kachel" data-clip data-tilt>
-        <span class="kicker" style="margin:0">Mein Preis</span>
-        <div class="null">0 €</div>
-        <p>Kein Firmenprodukt, nichts zu kaufen. Nur ein Projekt.</p>
       </article>
     </div>
   </section>
@@ -401,25 +415,25 @@
         <div class="kopf"><svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="17"/><path d="M24 14v10l7 5"/></svg><div><h3>Alltag</h3><small>12 Fähigkeiten</small></div></div>
         <ul><li>„Erinner mich in 20 Minuten an den Müll“</li><li>„Fokus 25 Minuten 3 Runden“</li><li>„Mach das über Nacht: recherchiere …“</li></ul>
       </article>
-      <article class="karte">
+      <article class="karte k2">
         <span class="gr">02</span>
         <div class="motiv" aria-hidden="true"><svg viewBox="0 0 160 112"><rect class="m-karte" style="--w:-14deg" x="52" y="30" width="56" height="62" rx="8"/><rect class="m-karte" style="--w:0deg" x="52" y="30" width="56" height="62" rx="8"/><rect class="m-karte" style="--w:14deg" x="52" y="30" width="56" height="62" rx="8"/></svg></div>
         <div class="kopf"><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M8 10c6-3 12-3 16 1 4-4 10-4 16-1v28c-6-3-12-3-16 1-4-4-10-4-16-1z"/><path d="M24 11v28"/></svg><div><h3>Schule</h3><small>7 Fähigkeiten</small></div></div>
-        <ul><li>„Mathe fällt morgen aus“</li><li>„Vokabeln Englisch“</li><li>„Probearbeit Mathe“</li></ul>
+        <p class="gz">„Mathe fällt morgen aus.“ <em>Notiert.</em></p><ul><li>„Vokabeln Englisch“</li><li>„Probearbeit Mathe“</li></ul>
       </article>
-      <article class="karte">
+      <article class="karte k3">
         <span class="gr">03</span>
         <div class="motiv" aria-hidden="true"><div class="term"><b>&gt;</b> Öffne YouTube<br><b>&gt;</b> Kugel an<br><b>&gt;</b> <span class="cur"></span></div></div>
         <div class="kopf"><svg viewBox="0 0 48 48" aria-hidden="true"><rect x="7" y="9" width="34" height="23" rx="3"/><path d="M3 39h42M19 32l-1 7M29 32l1 7"/></svg><div><h3>Laptop</h3><small>6 Fähigkeiten</small></div></div>
         <ul><li>„Öffne YouTube“</li><li>„Übernimm den Computer: …“</li><li>„Kugel an“</li></ul>
       </article>
-      <article class="karte">
+      <article class="karte k4">
         <span class="gr">04</span>
         <div class="motiv" aria-hidden="true"><div class="push"><b>Jarvis</b>Guten Morgen. Dein Briefing ist da.</div></div>
         <div class="kopf"><svg viewBox="0 0 48 48" aria-hidden="true"><rect x="14" y="5" width="20" height="38" rx="5"/><path d="M21 37h6"/></svg><div><h3>Handy</h3><small>4 Fähigkeiten</small></div></div>
         <ul><li>„Hey Siri, Jarvis“</li><li>Foto von Zettel oder Tafel machen</li><li>Fernbedienung öffnen</li></ul>
       </article>
-      <article class="karte">
+      <article class="karte breit">
         <span class="gr">05</span>
         <div class="motiv" aria-hidden="true"><span class="ecke a"></span><span class="ecke b"></span><span class="ecke c"></span><span class="ecke d"></span><span class="scan"></span></div>
         <div class="kopf"><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M4 24c6-10 13-15 20-15s14 5 20 15c-6 10-13 15-20 15S10 34 4 24z"/><circle cx="24" cy="24" r="6"/></svg><div><h3>Sehen und Sprechen</h3><small>5 Fähigkeiten</small></div></div>
@@ -429,7 +443,7 @@
         <span class="gr">06</span>
         <div class="motiv" aria-hidden="true"><div class="balkenreihe"><i style="animation-delay:0s"></i><i style="animation-delay:-.4s"></i><i style="animation-delay:-.8s"></i><i style="animation-delay:-1.2s"></i><i style="animation-delay:-1.6s"></i><i style="animation-delay:-2s"></i><i style="animation-delay:-2.4s"></i></div></div>
         <div class="kopf"><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M24 8v32M8 24h32"/></svg><div><h3>Und noch mehr</h3><small>10 Fähigkeiten</small></div></div>
-        <ul><li>„Ich habe 20 Euro von Oma bekommen“</li><li>„Mach ein Reel über meinen Jarvis“</li><li>„Wie erholt bin ich?“</li></ul>
+        <ul><li>„Ich habe 20 Euro bekommen“</li><li>„Mach ein Reel über meinen Jarvis“</li><li>„Wie erholt bin ich?“</li></ul>
       </article>
     </div>
   </section>
@@ -536,7 +550,7 @@
     b.addEventListener('click', () => frage(q.f, q.a)); chipBox.appendChild(b);
   });
   form.addEventListener('submit', (e) => { e.preventDefault(); const t = feld.value; feld.value = ''; frage(t); });
-  blase('Na? Frag mich was, Master. Tipp links auf einen Satz oder schreib selbst.', 'er');
+  blase('Na? Frag mich was, Master. Tipp auf einen Satz oder schreib selbst.', 'er');
 
   if (!window.gsap || !window.ScrollTrigger) return;
   gsap.registerPlugin(ScrollTrigger);
@@ -560,9 +574,9 @@
   }
 
   // Navigation verglasen
-  ScrollTrigger.create({ start: 80, onToggle: (s) => $('.nav').classList.toggle('verglast', s.isActive) });
+  ScrollTrigger.create({ start: 80, end: 'max', onToggle: (s) => $('.nav').classList.toggle('verglast', s.isActive) });
   // Nav: helle Variante über dem Creme-Abschnitt, blendet beim Runterscrollen aus
-  ScrollTrigger.create({ trigger: '.galerie', start: 'top 60px', end: 'bottom 60px', onToggle: (s) => $('.nav').classList.toggle('hell', s.isActive) });
+  ScrollTrigger.create({ trigger: '.galerie', start: 'top 36px', end: 'bottom 36px', onToggle: (s) => $('.nav').classList.toggle('hell', s.isActive) });
   ScrollTrigger.create({ start: 400, end: 'max', onUpdate: (s) => { if (menue.getAttribute('aria-expanded') !== 'true') $('.nav').classList.toggle('weg', s.direction === 1); } });
   ScrollTrigger.create({ start: 0, end: 400, onToggle: (s) => { if (s.isActive) $('.nav').classList.remove('weg'); } });
   // Schluss-Knopf: zum Chat, Feld fokussieren, Kugel pulsieren
@@ -684,17 +698,17 @@ const ruhig = matchMedia('(prefers-reduced-motion: reduce)').matches;
 let renderer;
 try { renderer = new THREE.WebGLRenderer({ canvas, antialias: false, alpha: true, powerPreference: 'high-performance' }); } catch (e) { renderer = null; }
 if (renderer) {
-  renderer.setPixelRatio(Math.min(devicePixelRatio, handy ? 1.5 : 2));
+  renderer.setPixelRatio(Math.min(devicePixelRatio, handy ? 1.5 : 1.75));
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(35, 1, .1, 100);
   camera.position.z = 6;
 
-  const N = handy ? 9000 : 14000;
+  const N = handy ? 10000 : 16000;
   const A = new Float32Array(N * 3), B = new Float32Array(N * 3), C = new Float32Array(N * 3);
   for (let i = 0; i < N; i++) {
     // A: Kugel (Fibonacci)
     const y = 1 - (i + .5) / N * 2, rr = Math.sqrt(1 - y * y), th = i * 2.399963;
-    const r = 1.5 * (.94 + Math.random() * .06);
+    const r = 1.5 * (i % 4 === 0 ? Math.cbrt(Math.random()) * .9 : (.94 + Math.random() * .06));
     A.set([Math.cos(th) * rr * r, y * r, Math.sin(th) * rr * r], i * 3);
     // B: konzentrische Ringe wie Schallwellen
     const k = 1 + Math.floor(Math.random() * 9), rb = k * .18, tb = Math.random() * Math.PI * 2;
@@ -736,8 +750,8 @@ float snoise(vec3 v){
   return 42.0*dot(m*m,vec4(dot(p0,x0),dot(p1,x1),dot(p2,x2),dot(p3,x3)));
 }`;
   const U = {
-    uZeit: { value: 0 }, uMorph: { value: 0 }, uStaerke: { value: .34 }, uPuls: { value: 0 }, uPR: { value: renderer.getPixelRatio() }, uSize: { value: handy ? 1.9 : 2.4 },
-    uA: { value: new THREE.Color('#ff8a4d') }, uB: { value: new THREE.Color('#8a2a0e') }, uC: { value: new THREE.Color('#ffe9d6') },
+    uZeit: { value: 0 }, uMorph: { value: 0 }, uStaerke: { value: .34 }, uPuls: { value: 0 }, uPR: { value: renderer.getPixelRatio() }, uSize: { value: handy ? 2.8 : 3.4 },
+    uA: { value: new THREE.Color('#ff9a62') }, uB: { value: new THREE.Color('#c4400f') }, uC: { value: new THREE.Color('#ffe9d6') },
   };
   const mat = new THREE.ShaderMaterial({
     uniforms: U, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
@@ -765,11 +779,18 @@ float snoise(vec3 v){
         float d = length(gl_PointCoord-.5); if(d>.5) discard;
         float a = smoothstep(.5,0.,d);
         vec3 col = mix(uB,uA,smoothstep(-.5,.6,vN)); col = mix(col,uC,pow(a,4.)*.7);
-        gl_FragColor = vec4(col, a*(.5+.35*vN+.25));
+        gl_FragColor = vec4(col, a*(.8+.35*vN));
       }`,
   });
   const orb = new THREE.Points(geo, mat);
   scene.add(orb);
+  // Glühkern: weicher Halo hinter der Kugel
+  const halo = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), new THREE.ShaderMaterial({
+    transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
+    vertexShader: 'varying vec2 vU; void main(){ vU = uv - .5; gl_Position = projectionMatrix*modelViewMatrix*vec4(position,1.); }',
+    fragmentShader: 'varying vec2 vU; void main(){ float d = length(vU)*2.; float g = pow(max(1.-d,0.),2.2); gl_FragColor = vec4(vec3(1.,.38,.17)*g*.5, g*.5); }',
+  }));
+  halo.position.z = -.8; halo.renderOrder = -1; scene.add(halo);
 
   // Layout: Desktop rechts, Handy oben
   let basis = 1, ox = 0, oy = 0;
@@ -777,8 +798,8 @@ float snoise(vec3 v){
     const w = innerWidth, h = innerHeight; renderer.setSize(w, h, false);
     camera.aspect = w / h; camera.updateProjectionMatrix();
     const sh = 2 * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) * camera.position.z, sw = sh * camera.aspect;
-    basis = Math.min(.9, sw / 3.5, sh / 3.4) * (handy ? .8 : 1);
-    if (camera.aspect > 1.05) { ox = sw * .22; oy = 0; } else { ox = 0; oy = sh * .2; }
+    basis = Math.min(.9, sw / 3.1, sh / 3.4);
+    if (camera.aspect > 1.05) { ox = sw * .27; oy = 0; } else { ox = 0; oy = sh * .2; }
   }
   addEventListener('resize', groesse); groesse();
 
@@ -787,7 +808,7 @@ float snoise(vec3 v){
   addEventListener('jarvis-puls', () => { U.uPuls.value = 1; });
 
   let aktiv = true;
-  new IntersectionObserver(([e]) => { aktiv = e.isIntersecting; }).observe(document.getElementById('buehne'));
+  new IntersectionObserver(([e]) => { aktiv = e.isIntersecting; canvas.style.visibility = aktiv ? 'visible' : 'hidden'; }).observe(document.getElementById('buehne'));
   const uhr = new THREE.Clock();
   let ry = 0, rx = 0;
   renderer.setAnimationLoop(() => {
@@ -802,6 +823,7 @@ float snoise(vec3 v){
     orb.rotation.set(rx, ry, 0);
     orb.scale.setScalar(basis);
     orb.position.set(ox, oy, 0);
+    halo.position.x = ox; halo.position.y = oy; halo.scale.setScalar(basis * 5.2);
     renderer.render(scene, camera);
   });
   requestAnimationFrame(() => canvas.classList.add('da'));

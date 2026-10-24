@@ -1,5 +1,12 @@
 [
  {
+  "slug": "hi-ich-bin-jarvis",
+  "titel": "Hi. Ich bin Jarvis.",
+  "beschreibung": "Jarvis stellt sich selbst vor: eine 3D-Partikel-Kugel, die sich beim Scrollen verwandelt, mit Mini-Chat zum Ausprobieren.",
+  "art": "Webseite",
+  "datum": "24.10.2026"
+ },
+ {
   "slug": "jarvis-stellt-sich-vor",
   "titel": "Jarvis stellt sich vor",
   "beschreibung": "Vorstellungsseite von Jarvis, dem persönlichen KI-Assistenten von Ben-Vincent, mit Partikel-Kugel und Beispiel-Gespräch.",
