@@ -1,0 +1,838 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Hi. Ich bin Jarvis.</title>
+<meta name="description" content="Jarvis stellt sich vor: der persönliche KI-Assistent, den sein Chef selbst gebaut hat. Kurz, direkt, frech und kompetent.">
+<meta name="theme-color" content="#0e0a08">
+<meta property="og:title" content="Hi. Ich bin Jarvis.">
+<meta property="og:description" content="Ein selbstgebauter KI-Assistent mit Attitude. Probier ihn aus.">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230e0a08'/%3E%3Ccircle cx='16' cy='16' r='9' fill='%23ff6a3d'/%3E%3Ccircle cx='13' cy='13' r='3.5' fill='%23ffe9d6' opacity='.7'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;800&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<!--
+  KONZEPT-BRIEFING
+  Ziel: Jarvis stellt sich selbst vor, in der Ich-Form, mit Attitude. Zielgruppe: jeder, der staunen soll.
+  Der Besucher soll in drei Sekunden denken: "Das ist kein Chatbot, das ist jemand."
+
+  ART DIRECTION: "Nachtschicht Terrakotta"
+  Warme Dunkelheit (kein Schwarz), ein einziger Akzent in Terrakotta-Orange, Creme als helle Gegenfarbe. Wie ein Butler, der nachts
+  im Arbeitszimmer die Lampe anlässt.
+  DREI ADJEKTIVE: warm, trocken, lebendig.
+
+  SIGNATURE-MOMENT: Jarvis' Gesicht ist eine Wolke aus Partikeln (Three.js). Beim Scrollen verwandelt sie sich vor den Augen
+  vom Gehirn (Kugel) zur Stimme (Schallwellen-Ringe) zur Hand (Würfelgitter). Danach darf der Besucher ihm selbst Sätze zurufen,
+  er antwortet im Chat. Am Ende fügen sich Partikel zu seinem Namen.
+
+  BAUSTEINE: Wort-Masken-Intro, Three.js-Partikelkugel mit Shader und Morphing, gepinnte Verwandlung, horizontale Galerie,
+  Laufband mit Neigung, Partikel-Wort, Cursor und magnetische Knöpfe, Körnung, verglaste Navigation, SVG-Linie.
+-->
+<style>
+  :root {
+    --bg: #0e0a08; --bg2: #17110d; --creme: #f3ece2; --fg: #f3ece2; --muted: #b9ada0; --akzent: #ff6a3d; --akzent-tief: #b03a0b;
+    --linie: rgba(243, 236, 226, .14); --linie-dunkel: rgba(23, 17, 13, .16);
+    --display: "Bricolage Grotesque", "Arial Black", system-ui, sans-serif; --text: "Inter", system-ui, sans-serif;
+    --ease: cubic-bezier(.2, .8, .2, 1);
+    --abstand: clamp(80px, 12vw, 180px); --rand: clamp(20px, 5vw, 80px);
+    --r: 26px;
+  }
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body { background: var(--bg); color: var(--fg); font: 400 clamp(16px, 1.1vw + 8px, 18px)/1.65 var(--text); overflow-x: hidden; -webkit-font-smoothing: antialiased; }
+  h1, h2, h3 { font-family: var(--display); font-weight: 800; letter-spacing: -.035em; line-height: .95; margin: 0; text-wrap: balance; hyphens: auto; }
+  h2 { font-size: clamp(2.5rem, 6.4vw, 6rem); }
+  h3 { font-size: clamp(1.6rem, 2.6vw, 2.4rem); letter-spacing: -.025em; }
+  p { margin: 0; }
+  a { color: inherit; }
+  button { font: inherit; color: inherit; }
+  .kicker { font: 600 .72rem/1 var(--text); letter-spacing: .18em; text-transform: uppercase; color: var(--akzent); margin-bottom: 22px; display: block; }
+  :focus-visible { outline: 2px solid var(--akzent); outline-offset: 4px; }
+  .nur-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  section, footer { position: relative; z-index: 2; }
+  .abschnitt { padding: var(--abstand) var(--rand); background: var(--bg); }
+
+  /* Wort-Masken */
+  .wort { display: inline-block; overflow: hidden; vertical-align: top; padding-bottom: .12em; margin-bottom: -.12em; }
+  .wort > span { display: inline-block; will-change: transform; }
+  .wort.ak { color: var(--akzent); }
+
+  /* Körnung */
+  .koernung { position: fixed; inset: -50%; z-index: 60; pointer-events: none; opacity: .06; animation: koernung 1s steps(6) infinite;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>"); }
+  @keyframes koernung { 0%, 100% { transform: translate(0, 0); } 20% { transform: translate(-3%, 2%); } 40% { transform: translate(2%, -3%); } 60% { transform: translate(-2%, -1%); } 80% { transform: translate(3%, 3%); } }
+
+  /* Cursor */
+  .cursor { position: fixed; left: 0; top: 0; width: 14px; height: 14px; margin: -7px 0 0 -7px; border-radius: 50%; background: #fff; z-index: 70; pointer-events: none;
+    mix-blend-mode: difference; transition: width .3s var(--ease), height .3s var(--ease), margin .3s var(--ease); display: none; }
+  .cursor.gross { width: 64px; height: 64px; margin: -32px 0 0 -32px; }
+  @media (hover: hover) and (pointer: fine) { .cursor { display: block; } }
+
+  /* Navigation */
+  .nav { position: fixed; inset: 0 0 auto; z-index: 50; display: flex; justify-content: space-between; align-items: center; padding: 20px var(--rand);
+    transition: background .4s var(--ease), backdrop-filter .4s var(--ease), padding .4s var(--ease); }
+  .nav { transition: background .4s var(--ease), backdrop-filter .4s var(--ease), padding .4s var(--ease), transform .5s var(--ease), color .3s; }
+  .nav.weg { transform: translateY(-110%); }
+  .nav.hell { color: #17110d; }
+  .nav.hell .menue { border-color: rgba(23,17,13,.3); } .nav.hell .menue span { background: #17110d; }
+  .nav.hell.verglast { background: rgba(243, 236, 226, .92); }
+  .nav.verglast { background: rgba(14, 10, 8, .82); backdrop-filter: blur(14px) saturate(1.4); -webkit-backdrop-filter: blur(14px) saturate(1.4); padding-block: 12px; }
+  .logo { display: inline-flex; align-items: center; gap: 10px; font: 800 1.25rem/1 var(--display); letter-spacing: -.02em; text-decoration: none; min-height: 44px; }
+  .logo i { width: 14px; height: 14px; border-radius: 50%; background: radial-gradient(circle at 35% 35%, #ffe9d6, var(--akzent) 55%, #7a1f0a); box-shadow: 0 0 16px rgba(255, 106, 61, .8); animation: atmen 3s ease-in-out infinite; }
+  @keyframes atmen { 50% { transform: scale(1.35); } }
+  .nav-links { display: flex; gap: clamp(18px, 3vw, 40px); align-items: center; }
+  .nav-links a { text-decoration: none; font-weight: 600; font-size: .92rem; position: relative; padding: 12px 0; }
+  .nav-links a::after { content: ""; position: absolute; left: 0; right: 0; bottom: 8px; height: 1.5px; background: var(--akzent); transform: scaleX(0); transform-origin: left; transition: transform .35s var(--ease); }
+  .nav-links a:hover::after { transform: scaleX(1); }
+  .menue { display: none; width: 48px; height: 48px; border-radius: 50%; border: 1px solid var(--linie); background: transparent; cursor: pointer; place-items: center; }
+  .menue span { display: block; width: 18px; height: 1.5px; background: var(--fg); margin: 3px auto; transition: transform .3s var(--ease); }
+  .menue[aria-expanded="true"] span:first-child { transform: translateY(2.2px) rotate(45deg); }
+  .menue[aria-expanded="true"] span:last-child { transform: translateY(-2.2px) rotate(-45deg); }
+  .overlay { position: fixed; inset: 0; z-index: 45; background: rgba(14, 10, 8, .96); display: grid; place-content: center; gap: 12px; padding: 24px; visibility: hidden; opacity: 0; transition: opacity .4s var(--ease), visibility .4s; }
+  .overlay.offen { visibility: visible; opacity: 1; }
+  .overlay a { font: 800 clamp(2.4rem, 12vw, 4rem)/1.1 var(--display); letter-spacing: -.03em; text-decoration: none; padding: 6px 0; }
+  @media (max-width: 760px) { .nav-links { display: none; } .menue { display: grid; } }
+
+  /* Bühne: fester Partikel-Canvas */
+  #orb { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 0; opacity: 0; transition: opacity 1.4s ease; pointer-events: none; }
+  #orb.da { opacity: 1; }
+  .buehne { position: relative; z-index: 2; }
+
+  /* Hero */
+  .hero { min-height: 100svh; display: grid; align-items: end; padding: 140px var(--rand) clamp(40px, 9vh, 90px); position: relative; }
+  .hero h1 { font-size: clamp(3.6rem, 12.5vw, 11.5rem); max-width: 11ch; line-height: .88; letter-spacing: -.045em; }
+  .lead { max-width: 44ch; color: var(--muted); font-size: clamp(1.02rem, 1.4vw, 1.3rem); margin-top: 28px; }
+  .lead b { color: var(--fg); font-weight: 600; }
+  .knopf { display: inline-flex; align-items: center; gap: 12px; margin-top: 34px; padding: 0 30px; min-height: 56px; border-radius: 999px; border: 0; cursor: pointer;
+    background: var(--akzent); color: #1a0a04; font: 600 1rem/1 var(--text); text-decoration: none; }
+  .knopf.leer { background: transparent; color: var(--fg); border: 1px solid var(--linie); }
+  .hinweis { position: absolute; right: var(--rand); bottom: clamp(40px, 9vh, 90px); display: flex; align-items: center; gap: 14px; font: 600 .7rem/1 var(--text); letter-spacing: .18em; text-transform: uppercase; color: var(--muted); }
+  .hinweis i { display: block; width: 1.5px; height: 56px; background: var(--linie); position: relative; overflow: hidden; }
+  .hinweis i::after { content: ""; position: absolute; left: 0; top: 0; width: 100%; height: 40%; background: var(--akzent); animation: fall 2s var(--ease) infinite; }
+  @keyframes fall { from { transform: translateY(-100%); } to { transform: translateY(260%); } }
+  @media (max-width: 760px) { .hinweis { display: none; } .hero { padding-top: 120px; } }
+
+  /* Verwandlung (gepinnt) */
+  .morph { position: relative; min-height: 100svh; }
+  .rahmen { min-height: 100svh; display: grid; align-items: center; padding: 110px var(--rand) 60px; position: relative; }
+  .panels { position: relative; max-width: 600px; }
+  .panel { padding-block: 20px; }
+  .panel h2 { font-size: clamp(2.3rem, 5vw, 4.6rem); margin-bottom: 22px; }
+  .panel p { color: var(--muted); max-width: 46ch; }
+  .nr { font: 800 clamp(1rem, 1.4vw, 1.2rem)/1 var(--display); color: var(--akzent); letter-spacing: .04em; margin-bottom: 18px; display: block; }
+  .morph.an .panels { min-height: 26rem; }
+  .morph.an .panel { position: absolute; left: 0; top: 0; width: 100%; }
+  .balken { position: absolute; left: var(--rand); right: var(--rand); bottom: 44px; height: 2px; background: var(--linie); display: none; }
+  .morph.an .balken { display: block; }
+  .balken i { display: block; height: 100%; background: var(--akzent); transform: scaleX(0); transform-origin: left; }
+  @media (max-width: 760px) {
+    .morph { min-height: 0; }
+    .rahmen { display: block; min-height: 0; padding: 0; }
+    .panel { min-height: 78svh; display: flex; flex-direction: column; justify-content: flex-end; padding: 40px var(--rand); background: linear-gradient(to top, rgba(14, 10, 8, .95) 55%, rgba(14, 10, 8, 0)); }
+  }
+
+  /* Laufband */
+  .band { overflow: hidden; padding: 30px 0; background: var(--akzent); color: #1a0a04; position: relative; z-index: 2; transform: rotate(-1.4deg); margin: -20px -2vw; }
+  .band-innen { display: flex; width: max-content; font: 800 clamp(2.4rem, 6.5vw, 5.8rem)/1 var(--display); letter-spacing: -.035em; white-space: nowrap; }
+  .band-innen span { padding-right: .55em; }
+  .band-innen span:nth-child(even) { -webkit-text-stroke: 1.5px #1a0a04; color: transparent; }
+  .band-wrap { overflow: hidden; position: relative; z-index: 2; background: var(--bg); padding-block: 40px; }
+
+  /* Demo */
+  .demo { display: grid; grid-template-columns: repeat(12, 1fr); gap: clamp(32px, 5vw, 80px); align-items: center; }
+  .demo-text { grid-column: 1 / span 6; }
+  .demo-text h2 { margin-bottom: 26px; }
+  .demo-text .lead { margin-top: 0; }
+  .chips { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 34px; }
+  .chip { min-height: 46px; padding: 0 20px; border-radius: 999px; border: 1px solid var(--linie); background: rgba(243, 236, 226, .03); cursor: pointer; font-size: .92rem;
+    transition: background .3s var(--ease), border-color .3s var(--ease), transform .3s var(--ease); text-align: left; }
+  .chip:hover { background: rgba(255, 106, 61, .14); border-color: var(--akzent); }
+  .chip[disabled] { opacity: .5; cursor: wait; }
+  .zaehler { margin-top: 26px; font-size: .85rem; color: var(--muted); }
+  .zaehler b { color: var(--akzent); font: 800 1.4rem/1 var(--display); margin-right: 8px; }
+  .handy { grid-column: 8 / span 5; justify-self: end; width: min(100%, 390px); height: 640px; border-radius: 46px; border: 1px solid var(--linie); background: linear-gradient(160deg, #1d1510, #120d0a);
+    padding: 14px; display: flex; flex-direction: column; box-shadow: 0 40px 100px -30px rgba(255, 106, 61, .35), inset 0 0 0 6px #0b0806; position: relative; }
+  .handy-kopf { display: flex; align-items: center; gap: 12px; padding: 18px 14px 14px; border-bottom: 1px solid var(--linie); }
+  .mini-orb { width: 36px; height: 36px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #ffe9d6, var(--akzent) 45%, #7a1f0a 80%); box-shadow: 0 0 22px rgba(255, 106, 61, .7); transition: transform .4s var(--ease); }
+  .mini-orb.puls { animation: puls .7s var(--ease); }
+  @keyframes puls { 40% { transform: scale(1.45); box-shadow: 0 0 44px rgba(255, 106, 61, 1); } }
+  .handy-kopf b { font: 800 1.1rem/1 var(--display); display: block; }
+  .handy-kopf small { color: var(--muted); font-size: .72rem; }
+  .nachrichten { flex: 1; overflow-y: auto; padding: 16px 8px; display: flex; flex-direction: column; gap: 10px; scrollbar-width: thin; }
+  .blase { max-width: 86%; padding: 12px 16px; border-radius: 20px; font-size: .93rem; line-height: 1.45; }
+  .blase.er { background: #261b14; border-bottom-left-radius: 6px; align-self: flex-start; }
+  .blase.ich { background: var(--akzent); color: #1a0a04; border-bottom-right-radius: 6px; align-self: flex-end; font-weight: 600; }
+  .tippt { display: inline-flex; gap: 4px; padding: 4px 0; }
+  .tippt i { width: 6px; height: 6px; border-radius: 50%; background: var(--muted); animation: huepf 1s infinite; }
+  .tippt i:nth-child(2) { animation-delay: .15s; } .tippt i:nth-child(3) { animation-delay: .3s; }
+  @keyframes huepf { 40% { transform: translateY(-4px); opacity: .4; } }
+  .eingabe { display: flex; gap: 8px; padding: 10px 6px 6px; }
+  .eingabe input { flex: 1; min-width: 0; min-height: 48px; border-radius: 999px; border: 1px solid var(--linie); background: #0e0a08; color: var(--fg); padding: 0 18px; font: inherit; font-size: .93rem; }
+  .eingabe input::placeholder { color: #8f8478; }
+  .eingabe button { width: 48px; height: 48px; border-radius: 50%; border: 0; background: var(--akzent); color: #1a0a04; cursor: pointer; display: grid; place-items: center; flex: none; }
+  .fussnote { font-size: .72rem; color: var(--muted); text-align: center; padding: 6px 0 4px; }
+  @media (max-width: 900px) {
+    .demo-text, .handy { grid-column: 1 / -1; }
+    .handy { justify-self: center; height: 580px; }
+  }
+
+  /* Charakter (Bento) */
+  .charakter { background: radial-gradient(60% 50% at 15% 20%, rgba(255, 106, 61, .16), transparent 70%), radial-gradient(50% 60% at 90% 80%, rgba(122, 31, 10, .3), transparent 70%), var(--bg); }
+  .charakter h2 { max-width: 12ch; }
+  .bento { display: grid; grid-template-columns: repeat(12, 1fr); gap: clamp(14px, 2vw, 26px); margin-top: clamp(40px, 6vw, 80px); }
+  .kachel { grid-column: span 4; min-height: 280px; border-radius: var(--r); padding: clamp(22px, 2.4vw, 34px); background: rgba(243, 236, 226, .04); border: 1px solid var(--linie);
+    display: flex; flex-direction: column; justify-content: space-between; gap: 24px; position: relative; overflow: hidden; backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
+  .kachel.gross { grid-column: span 7; }
+  .kachel.mittel { grid-column: span 5; }
+  .kachel.hell { background: var(--creme); color: #17110d; border-color: transparent; }
+  .kachel.hell .kicker { color: var(--akzent-tief); }
+  .kachel.hell p { color: #4a3d33; }
+  .kachel p { color: var(--muted); max-width: 40ch; }
+  .zitat { font: 800 clamp(3.6rem, 10vw, 9rem)/.85 var(--display); letter-spacing: -.05em; color: var(--akzent); }
+  .wellen { display: flex; align-items: center; gap: 4px; height: 90px; }
+  .wellen i { flex: 1; height: 100%; border-radius: 4px; background: var(--akzent); transform: scaleY(.2); animation: welle 1.4s ease-in-out infinite; transform-origin: center; }
+  @keyframes welle { 50% { transform: scaleY(1); } }
+  .kugel-gross { width: clamp(110px, 14vw, 170px); aspect-ratio: 1; border-radius: 50%; align-self: flex-end; background: radial-gradient(circle at 35% 30%, #ffe9d6, var(--akzent) 40%, #7a1f0a 75%, transparent 76%); box-shadow: 0 0 80px rgba(255, 106, 61, .55); animation: atmen 4s ease-in-out infinite; }
+  .geraete { display: flex; gap: 18px; align-items: flex-end; }
+  .geraete svg { stroke: var(--akzent-tief); fill: none; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+  .null { font: 800 clamp(4rem, 9vw, 8rem)/.85 var(--display); letter-spacing: -.05em; color: var(--akzent); }
+  @media (max-width: 900px) { .kachel, .kachel.gross, .kachel.mittel { grid-column: span 12; min-height: 230px; } }
+
+  /* Galerie */
+  .galerie { background: var(--creme); color: #17110d; padding: clamp(80px, 11vh, 120px) 0 clamp(50px, 8vh, 100px); overflow: hidden; }
+  .galerie .kicker { color: var(--akzent-tief); padding-inline: var(--rand); }
+  .galerie h2 { padding-inline: var(--rand); margin-bottom: clamp(24px, 4vh, 48px); max-width: 20ch; font-size: clamp(2.4rem, 5vw, 4.6rem); }
+  .spur { display: flex; gap: clamp(16px, 2vw, 28px); padding-inline: var(--rand); width: max-content; }
+  .karte { width: min(78vw, 480px); border-radius: 30px; padding: clamp(24px, 2.6vw, 36px); background: #17110d; color: var(--creme); display: flex; flex-direction: column; gap: 20px; min-height: 410px; justify-content: space-between; position: relative; overflow: hidden; }
+  .karte.akz { background: var(--akzent); color: #1a0a04; }
+  .karte .gr { font: 600 .72rem/1 var(--text); letter-spacing: .16em; color: var(--akzent); }
+  .karte.akz .gr { color: #1a0a04; }
+  .karte .kopf svg { width: 38px; height: 38px; stroke: var(--akzent); fill: none; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+  .karte.akz .kopf svg { stroke: #1a0a04; }
+  .kopf { display: flex; align-items: center; gap: 16px; } .kopf h3 { margin: 0; } .kopf small { margin-top: 6px; }
+  .motiv { height: 112px; border-radius: 18px; background: rgba(243,236,226,.06); border: 1px solid rgba(243,236,226,.12); position: relative; overflow: hidden; display: grid; place-items: center; }
+  .karte.akz .motiv { background: rgba(26,10,4,.1); border-color: rgba(26,10,4,.25); }
+  .motiv svg { width: 100%; height: 100%; }
+  .m-ring { stroke: rgba(243,236,226,.2); fill: none; stroke-width: 6; }
+  .m-ring.v { stroke: var(--akzent); stroke-linecap: round; stroke-dasharray: 189; stroke-dashoffset: 189; animation: ringlauf 4s linear infinite; transform-box: fill-box; transform-origin: center; transform: rotate(-90deg); }
+  @keyframes ringlauf { to { stroke-dashoffset: 0; } }
+  .m-txt { fill: var(--creme); font: 800 15px var(--display); }
+  .m-karte { fill: #261b14; stroke: var(--akzent); stroke-width: 2; animation: faecher 3.6s ease-in-out infinite; transform-box: fill-box; transform-origin: bottom center; }
+  .m-karte:nth-child(2) { animation-delay: .25s; fill: #17110d; } .m-karte:nth-child(3) { animation-delay: .5s; fill: var(--akzent); }
+  @keyframes faecher { 50% { transform: rotate(var(--w)); } }
+  .term { justify-self: start; padding: 0 18px; font: 600 .85rem/1.9 ui-monospace, Consolas, monospace; color: var(--creme); }
+  .term b { color: var(--akzent); font-weight: 600; }
+  .term .cur { display: inline-block; width: 8px; height: 1em; background: var(--akzent); vertical-align: -2px; animation: blink 1s steps(2) infinite; }
+  @keyframes blink { 50% { opacity: 0; } }
+  .push { justify-self: start; margin-left: 18px; padding: 10px 16px; border-radius: 16px; background: #261b14; border: 1px solid rgba(243,236,226,.16); font-size: .82rem; line-height: 1.35; color: var(--creme); animation: reinschieben 4s var(--ease) infinite; }
+  .push b { color: var(--akzent); display: block; font-size: .68rem; letter-spacing: .14em; text-transform: uppercase; }
+  @keyframes reinschieben { 0% { transform: translateX(-120%); opacity: 0; } 15%, 80% { transform: none; opacity: 1; } 100% { transform: translateY(-30px); opacity: 0; } }
+  .scan { position: absolute; left: 14%; right: 14%; height: 2px; background: var(--akzent); box-shadow: 0 0 14px var(--akzent); animation: scanne 2.6s ease-in-out infinite alternate; }
+  @keyframes scanne { from { top: 18%; } to { top: 80%; } }
+  .ecke { position: absolute; width: 22px; height: 22px; border: 2px solid var(--creme); } .ecke.a { left: 14%; top: 14%; border-right: 0; border-bottom: 0; } .ecke.b { right: 14%; top: 14%; border-left: 0; border-bottom: 0; } .ecke.c { left: 14%; bottom: 14%; border-right: 0; border-top: 0; } .ecke.d { right: 14%; bottom: 14%; border-left: 0; border-top: 0; }
+  .balkenreihe { display: flex; align-items: flex-end; gap: 8px; height: 70%; padding: 0 22px; width: 100%; align-self: end; }
+  .balkenreihe i { flex: 1; height: 100%; background: #1a0a04; border-radius: 4px 4px 0 0; transform-origin: bottom; animation: waechst 3s ease-in-out infinite; }
+  @keyframes waechst { 0%, 100% { transform: scaleY(.25); } 50% { transform: scaleY(1); } }
+  .karte small { font: 600 .72rem/1 var(--text); letter-spacing: .16em; text-transform: uppercase; opacity: .75; display: block; margin-top: 10px; }
+  .karte ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+  .karte li { padding: 12px 16px; border-radius: 16px; border: 1px solid rgba(243, 236, 226, .18); font-size: .95rem; line-height: 1.4; }
+  .karte.akz li { border-color: rgba(26, 10, 4, .3); }
+  @media (max-width: 799px) {
+    .spur { width: auto; overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: 12px; }
+    .karte { flex: none; scroll-snap-align: start; width: 82vw; min-height: 380px; }
+    .karte li:nth-child(3) { display: none; }
+  }
+
+  /* Herkunft */
+  .herkunft { overflow: hidden; }
+  .herkunft h2 { max-width: 13ch; }
+  .herkunft .lead { margin-top: 26px; }
+  .welle-svg { width: 100%; height: auto; display: block; margin: clamp(40px, 6vw, 80px) 0; }
+  .welle-svg path { fill: none; stroke: var(--akzent); stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+  .zahlen { display: grid; grid-template-columns: repeat(4, 1fr); gap: clamp(20px, 3vw, 40px); border-top: 1px solid var(--linie); padding-top: 36px; }
+  .zahl { font: 800 clamp(3.4rem, 8vw, 7.5rem)/.9 var(--display); letter-spacing: -.05em; color: var(--akzent); display: block; }
+  .zahlen p { color: var(--muted); font-size: .95rem; margin-top: 12px; max-width: 22ch; }
+  @media (max-width: 760px) { .zahlen { grid-template-columns: 1fr 1fr; row-gap: 40px; } }
+
+  /* Schluss */
+  .schluss { background: var(--bg); padding: var(--abstand) var(--rand) 40px; overflow: hidden; }
+  .schluss h2 { font-size: clamp(3rem, 9vw, 9rem); max-width: 12ch; line-height: .9; }
+  .partikel { height: clamp(170px, 26vw, 360px); margin-top: clamp(30px, 5vw, 60px); }
+  .partikel canvas { width: 100%; height: 100%; display: block; }
+  .gross-knopf { min-height: 72px; padding: 0 44px; font-size: 1.15rem; box-shadow: 0 0 0 0 rgba(255,106,61,.5); animation: ring 2.4s ease-out infinite; }
+  @keyframes ring { to { box-shadow: 0 0 0 26px rgba(255,106,61,0); } }
+  .fuss { display: flex; justify-content: space-between; gap: 20px; flex-wrap: wrap; border-top: 1px solid var(--linie); margin-top: 40px; padding-top: 24px; font-size: .85rem; color: var(--muted); }
+
+  @media (prefers-reduced-motion: reduce) {
+    .koernung, .hinweis i::after, .wellen i, .kugel-gross, .logo i, .m-ring.v, .m-karte, .push, .scan, .balkenreihe i, .term .cur, .gross-knopf { animation: none; }
+    .m-ring.v { stroke-dashoffset: 60; }
+    .wellen i { transform: scaleY(.6); }
+    * { scroll-behavior: auto !important; }
+  }
+</style>
+</head>
+<body>
+<div class="koernung" aria-hidden="true"></div>
+<div class="cursor" aria-hidden="true"></div>
+<canvas id="orb" aria-hidden="true"></canvas>
+
+<nav class="nav" aria-label="Hauptnavigation">
+  <a class="logo" href="#top" aria-label="Jarvis, zum Anfang"><i></i>Jarvis</a>
+  <div class="nav-links">
+    <a href="#verwandlung" data-magnet>Verwandlung</a>
+    <a href="#sprich" data-magnet>Sprich mit mir</a>
+    <a href="#kann" data-magnet>Was ich kann</a>
+  </div>
+  <button class="menue" aria-label="Menü öffnen" aria-expanded="false" aria-controls="overlay"><span></span><span></span></button>
+</nav>
+<div class="overlay" id="overlay">
+  <a href="#verwandlung">Verwandlung</a><a href="#sprich">Sprich mit mir</a><a href="#kann">Was ich kann</a>
+</div>
+
+<main id="top">
+  <div class="buehne" id="buehne">
+    <header class="hero">
+      <div>
+        <span class="kicker">Persönlicher KI-Assistent, Jahrgang 2026</span>
+        <h1 data-split>Hi. Ich bin *Jarvis.*</h1>
+        <p class="lead" data-einblenden>Mein Chef hat mich selbst gebaut. Ich bin <b>kurz, direkt und manchmal frech</b>, aber immer kompetent. Schau mir mal beim Denken zu.</p>
+        <a class="knopf" href="#sprich" data-magnet data-einblenden>Sag mir was <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+      </div>
+      <div class="hinweis" aria-hidden="true"><span>Scrollen</span><i></i></div>
+    </header>
+
+    <section class="morph" id="verwandlung" aria-label="Wie Jarvis aufgebaut ist">
+      <div class="rahmen">
+        <div class="panels">
+          <article class="panel">
+            <span class="nr">01 / 03 · Gehirn</span>
+            <h2>Ich kenne deine Welt, bevor du fragst.</h2>
+            <p>Schule, Termine, Hausaufgaben, Gedächtnis: Ich lese mich ein und denke mit. Fällt ein Gehirn aus, springt das andere ein, Claude oder Gemini.</p>
+          </article>
+          <article class="panel">
+            <span class="nr">02 / 03 · Stimme</span>
+            <h2>Du sprichst. Ich antworte. Sofort.</h2>
+            <p>Echtzeit-Gespräch mit meiner Stimme „Charon“. Morgens melde ich mich von selbst mit einem Briefing, frech und auf den Punkt.</p>
+          </article>
+          <article class="panel">
+            <span class="nr">03 / 03 · Hand</span>
+            <h2>Und dann packe ich an.</h2>
+            <p>Programme öffnen, Musik starten, den ganzen Computer bedienen, per Handy-Fernbedienung oder mit Handgesten vor der Kamera.</p>
+          </article>
+        </div>
+        <div class="balken" aria-hidden="true"><i></i></div>
+      </div>
+    </section>
+  </div>
+
+  <div class="band-wrap" aria-hidden="true">
+    <div class="band"><div class="band-innen">
+      <span>Ja, Master.</span><span>Schule los.</span><span>Kugel an.</span><span>Hey Jarvis.</span><span>Gute Nacht.</span>
+      <span>Ja, Master.</span><span>Schule los.</span><span>Kugel an.</span><span>Hey Jarvis.</span><span>Gute Nacht.</span>
+    </div></div>
+  </div>
+
+  <section class="abschnitt" id="sprich" aria-label="Mit Jarvis sprechen">
+    <div class="demo">
+      <div class="demo-text">
+        <span class="kicker">Mini-Demo, probier es aus</span>
+        <h2 data-zeilen>Ruf mir was zu.</h2>
+        <p class="lead" data-einblenden>Tipp auf einen Satz oder schreib einen eigenen. So klingt das, wenn mein Chef mit mir redet. Die Antworten hier sind Beispiele.</p>
+        <div class="chips" role="group" aria-label="Beispielsätze"></div>
+        <p class="zaehler"><b id="zaehler">0</b>Befehle in dieser Sitzung</p>
+      </div>
+      <div class="handy" role="region" aria-label="Chat mit Jarvis">
+        <div class="handy-kopf"><div class="mini-orb" id="miniorb"></div><div><b>Jarvis</b><small>online, wie immer</small></div></div>
+        <div class="nachrichten" id="nachrichten" aria-live="polite"></div>
+        <form class="eingabe" id="form" autocomplete="off">
+          <label class="nur-sr" for="frage">Dein Satz an Jarvis</label>
+          <input id="frage" type="text" placeholder="Schreib mir was …" maxlength="80">
+          <button type="submit" aria-label="Senden"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+        </form>
+        <p class="fussnote">Beispiel-Antworten, nichts wird gesendet</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="abschnitt charakter" aria-label="Charakter">
+    <span class="kicker">Charakter</span>
+    <h2 data-zeilen>Butler mit Attitude.</h2>
+    <div class="bento">
+      <article class="kachel gross" data-clip>
+        <span class="kicker" style="margin:0">Mein Ton</span>
+        <div class="zitat">Ja, Master.</div>
+        <p>Kurz, direkt, frech, aber professionell. Wenn eine Idee schwach ist, sage ich es. Mit einem besseren Vorschlag.</p>
+      </article>
+      <article class="kachel mittel" data-clip>
+        <span class="kicker" style="margin:0">Meine Stimme</span>
+        <div class="wellen" aria-hidden="true"></div>
+        <p>Sie heißt „Charon“ und antwortet in Echtzeit.</p>
+      </article>
+      <article class="kachel" data-clip data-tilt>
+        <span class="kicker" style="margin:0">Mein Gesicht</span>
+        <div class="kugel-gross" aria-hidden="true"></div>
+        <p>Eine leuchtende Partikel-Kugel in Terrakotta-Orange.</p>
+      </article>
+      <article class="kachel hell" data-clip data-tilt>
+        <span class="kicker" style="margin:0">Ich laufe auf</span>
+        <div class="geraete" aria-hidden="true">
+          <svg width="120" height="84" viewBox="0 0 120 84"><rect x="14" y="8" width="92" height="56" rx="6"/><path d="M4 74h112M46 74l3-10h22l3 10"/></svg>
+          <svg width="46" height="84" viewBox="0 0 46 84"><rect x="6" y="6" width="34" height="72" rx="8"/><path d="M19 70h8"/></svg>
+        </div>
+        <p>Laptop-Cockpit und iPhone-App. Überall derselbe Jarvis.</p>
+      </article>
+      <article class="kachel" data-clip data-tilt>
+        <span class="kicker" style="margin:0">Mein Preis</span>
+        <div class="null">0 €</div>
+        <p>Kein Firmenprodukt, nichts zu kaufen. Nur ein Projekt.</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="galerie" id="kann" aria-label="Was Jarvis kann">
+    <span class="kicker">44 Fähigkeiten im Auszug</span>
+    <h2 data-zeilen>Was ich alles kann.</h2>
+    <div class="spur">
+      <article class="karte">
+        <span class="gr">01</span>
+        <div class="motiv" aria-hidden="true"><svg viewBox="0 0 160 112"><circle class="m-ring" cx="80" cy="56" r="30"/><circle class="m-ring v" cx="80" cy="56" r="30"/><text class="m-txt" x="80" y="61" text-anchor="middle">20:00</text></svg></div>
+        <div class="kopf"><svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="17"/><path d="M24 14v10l7 5"/></svg><div><h3>Alltag</h3><small>12 Fähigkeiten</small></div></div>
+        <ul><li>„Erinner mich in 20 Minuten an den Müll“</li><li>„Fokus 25 Minuten 3 Runden“</li><li>„Mach das über Nacht: recherchiere …“</li></ul>
+      </article>
+      <article class="karte">
+        <span class="gr">02</span>
+        <div class="motiv" aria-hidden="true"><svg viewBox="0 0 160 112"><rect class="m-karte" style="--w:-14deg" x="52" y="30" width="56" height="62" rx="8"/><rect class="m-karte" style="--w:0deg" x="52" y="30" width="56" height="62" rx="8"/><rect class="m-karte" style="--w:14deg" x="52" y="30" width="56" height="62" rx="8"/></svg></div>
+        <div class="kopf"><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M8 10c6-3 12-3 16 1 4-4 10-4 16-1v28c-6-3-12-3-16 1-4-4-10-4-16-1z"/><path d="M24 11v28"/></svg><div><h3>Schule</h3><small>7 Fähigkeiten</small></div></div>
+        <ul><li>„Mathe fällt morgen aus“</li><li>„Vokabeln Englisch“</li><li>„Probearbeit Mathe“</li></ul>
+      </article>
+      <article class="karte">
+        <span class="gr">03</span>
+        <div class="motiv" aria-hidden="true"><div class="term"><b>&gt;</b> Öffne YouTube<br><b>&gt;</b> Kugel an<br><b>&gt;</b> <span class="cur"></span></div></div>
+        <div class="kopf"><svg viewBox="0 0 48 48" aria-hidden="true"><rect x="7" y="9" width="34" height="23" rx="3"/><path d="M3 39h42M19 32l-1 7M29 32l1 7"/></svg><div><h3>Laptop</h3><small>6 Fähigkeiten</small></div></div>
+        <ul><li>„Öffne YouTube“</li><li>„Übernimm den Computer: …“</li><li>„Kugel an“</li></ul>
+      </article>
+      <article class="karte">
+        <span class="gr">04</span>
+        <div class="motiv" aria-hidden="true"><div class="push"><b>Jarvis</b>Guten Morgen. Dein Briefing ist da.</div></div>
+        <div class="kopf"><svg viewBox="0 0 48 48" aria-hidden="true"><rect x="14" y="5" width="20" height="38" rx="5"/><path d="M21 37h6"/></svg><div><h3>Handy</h3><small>4 Fähigkeiten</small></div></div>
+        <ul><li>„Hey Siri, Jarvis“</li><li>Foto von Zettel oder Tafel machen</li><li>Fernbedienung öffnen</li></ul>
+      </article>
+      <article class="karte">
+        <span class="gr">05</span>
+        <div class="motiv" aria-hidden="true"><span class="ecke a"></span><span class="ecke b"></span><span class="ecke c"></span><span class="ecke d"></span><span class="scan"></span></div>
+        <div class="kopf"><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M4 24c6-10 13-15 20-15s14 5 20 15c-6 10-13 15-20 15S10 34 4 24z"/><circle cx="24" cy="24" r="6"/></svg><div><h3>Sehen und Sprechen</h3><small>5 Fähigkeiten</small></div></div>
+        <ul><li>„Jarvis in AR“</li><li>„Bewerte mein Outfit“</li><li>„Zimmer-Wächter an“</li></ul>
+      </article>
+      <article class="karte akz">
+        <span class="gr">06</span>
+        <div class="motiv" aria-hidden="true"><div class="balkenreihe"><i style="animation-delay:0s"></i><i style="animation-delay:-.4s"></i><i style="animation-delay:-.8s"></i><i style="animation-delay:-1.2s"></i><i style="animation-delay:-1.6s"></i><i style="animation-delay:-2s"></i><i style="animation-delay:-2.4s"></i></div></div>
+        <div class="kopf"><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M24 8v32M8 24h32"/></svg><div><h3>Und noch mehr</h3><small>10 Fähigkeiten</small></div></div>
+        <ul><li>„Ich habe 20 Euro von Oma bekommen“</li><li>„Mach ein Reel über meinen Jarvis“</li><li>„Wie erholt bin ich?“</li></ul>
+      </article>
+    </div>
+  </section>
+
+  <section class="abschnitt herkunft" aria-label="Herkunft">
+    <span class="kicker">Woher ich komme</span>
+    <h2 data-zeilen>Selbst gebaut, Stück für Stück.</h2>
+    <p class="lead" data-einblenden>Mit Claude Code und Gemini hat mein Chef mich aufgebaut: erst das Gehirn, dann die Stimme, dann die Hand. Kein Unternehmen dahinter, kein Preisschild.</p>
+    <svg class="welle-svg" viewBox="0 0 1200 200" data-zeichnen aria-hidden="true" preserveAspectRatio="none"><path id="wellenpfad" d="M0 100H1200"/></svg>
+    <div class="zahlen">
+      <div><span class="zahl" data-zahl="10">0</span><p>Bereiche: von Schule bis Laptop</p></div>
+      <div><span class="zahl" data-zahl="44">0</span><p>Fähigkeiten im Auszug</p></div>
+      <div><span class="zahl" data-zahl="46">0</span><p>Systemtests, alle bestanden</p></div>
+      <div><span class="zahl" data-zahl="2">0</span><p>Gehirne: Claude und Gemini</p></div>
+    </div>
+  </section>
+</main>
+
+<footer class="schluss" id="ende">
+  <span class="kicker">Schluss</span>
+  <h2 data-zeilen>Sag einfach: Hey Jarvis.</h2>
+  <button class="knopf gross-knopf" id="cta" type="button" data-magnet>Jetzt mit mir reden <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+  <div class="partikel"><canvas id="partikel" aria-label="Das Wort JARVIS aus Partikeln"></canvas></div>
+  <div class="fuss"><span>Selbst gebaut mit Claude Code und Gemini.</span><span>Diese Seite hat Jarvis' Werkstatt gebaut.</span></div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script>
+(() => {
+  const ruhig = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const $ = (s, el = document) => el.querySelector(s);
+
+  // ---------- Inhalte, die auch ohne GSAP funktionieren ----------
+  // Schallwellen-Balken
+  const wellen = $('.wellen');
+  for (let i = 0; i < 28; i++) { const b = document.createElement('i'); b.style.animationDelay = (-i * 0.09) + 's'; b.style.animationDuration = (1 + (i % 5) * 0.18) + 's'; wellen.appendChild(b); }
+
+  // Wellen-Linie (SVG)
+  (() => {
+    let d = 'M0 100';
+    for (let x = 0; x <= 1200; x += 4) {
+      const env = Math.exp(-Math.pow((x - 600) / 300, 2));
+      const y = 100 + Math.sin(x * 0.07) * 78 * env * (0.6 + 0.4 * Math.sin(x * 0.019 + 1)) + Math.sin(x * 0.2) * 8 * env;
+      d += ' L' + x + ' ' + y.toFixed(1);
+    }
+    $('#wellenpfad').setAttribute('d', d);
+  })();
+
+  // Menü
+  const menue = $('.menue'), overlay = $('#overlay');
+  const menueZu = () => { overlay.classList.remove('offen'); menue.setAttribute('aria-expanded', 'false'); menue.setAttribute('aria-label', 'Menü öffnen'); };
+  menue.addEventListener('click', () => {
+    const auf = overlay.classList.toggle('offen');
+    menue.setAttribute('aria-expanded', auf); menue.setAttribute('aria-label', auf ? 'Menü schließen' : 'Menü öffnen');
+  });
+  overlay.querySelectorAll('a').forEach((a) => a.addEventListener('click', menueZu));
+  addEventListener('keydown', (e) => { if (e.key === 'Escape') menueZu(); });
+
+  // ---------- Mini-Demo: Chat ----------
+  const FRAGEN = [
+    { f: 'Erinner mich in 20 Minuten an den Müll', a: 'Läuft. In 20 Minuten klingelt dein iPhone. Der Müll wartet nicht, Master.', k: /erinner|timer|wecker/i },
+    { f: 'Fokus 25 Minuten 3 Runden', a: 'Drei Runden, dazwischen Pausen. Ich melde mich bei jeder. Handy weg, los.', k: /fokus|lernen|pomodoro/i },
+    { f: 'Schule los', a: 'Fächer von morgen, fällige Hausaufgaben, Wetter und Jacke. Alles in einem Satz, du Glückspilz.', k: /schule|hausaufgabe|schultasche/i },
+    { f: 'Mathe fällt morgen aus', a: 'Notiert. Mathe fliegt aus dem Plan. Die Hausaufgaben bleiben leider, die Freude nicht.', k: /ausfall|fällt|faellt|mathe|schulfrei/i },
+    { f: 'Wo ist mein Ladekabel?', a: 'In der Schublade. Du hast es mir selbst gesagt. Ich vergesse nichts, du schon.', k: /wo ist|ladekabel|kopfhörer|kopfhoerer/i },
+    { f: 'Mach das über Nacht: recherchiere …', a: 'Nachtschicht angenommen. Du schläfst, ich arbeite. Morgen früh liegt das Ergebnis bereit.', k: /nacht|recherch|über nacht/i },
+    { f: 'Bau mir eine Webseite für …', a: 'Die Werkstatt baut sie im Hintergrund und schickt dir den Link. Diese Seite hier ist übrigens genauso entstanden.', k: /web|seite|bau/i },
+  ];
+  const SONST = [
+    { k: /hallo|hi\b|hey|moin|servus/i, a: 'Na, wer stört? Schön, dass du da bist. Was gibt es zu tun?' },
+    { k: /wer bist|wer bist du|stell dich|was bist/i, a: 'Ich bin Jarvis, der persönliche KI-Assistent meines Chefs. Selbst gebaut, frech, aber kompetent.' },
+    { k: /danke|super|cool|krass/i, a: 'Ich weiß. Ja, Master.' },
+  ];
+  const WUNSCH = 'Das kann ich noch nicht. Ich schreibe es in die Wunschbox, vielleicht baue ich es mir nachts bei.';
+
+  const chipBox = $('.chips'), msgs = $('#nachrichten'), form = $('#form'), feld = $('#frage'), zaehlerEl = $('#zaehler'), mini = $('#miniorb');
+  let n = 0, beschaeftigt = false;
+
+  function blase(text, wer) {
+    const b = document.createElement('div'); b.className = 'blase ' + wer; b.textContent = text; msgs.appendChild(b); msgs.scrollTop = msgs.scrollHeight; return b;
+  }
+  function schreibe(el, text, fertig) {
+    if (ruhig) { el.textContent = text; msgs.scrollTop = msgs.scrollHeight; return fertig(); }
+    let i = 0; el.textContent = '';
+    const t = setInterval(() => { el.textContent = text.slice(0, ++i); msgs.scrollTop = msgs.scrollHeight; if (i >= text.length) { clearInterval(t); fertig(); } }, 16);
+  }
+  function frage(text, direkt) {
+    text = text.trim(); if (!text || beschaeftigt) return;
+    beschaeftigt = true; chipBox.querySelectorAll('button').forEach((c) => (c.disabled = true));
+    blase(text, 'ich');
+    const antwortEl = blase('', 'er'); antwortEl.innerHTML = '<span class="tippt" aria-label="Jarvis tippt"><i></i><i></i><i></i></span>';
+    let antwort = direkt;
+    if (!antwort) { const fund = FRAGEN.concat(SONST).find((x) => x.k.test(text)); antwort = fund ? fund.a : WUNSCH; }
+    setTimeout(() => {
+      mini.classList.remove('puls'); void mini.offsetWidth; mini.classList.add('puls'); dispatchEvent(new Event('jarvis-puls'));
+      schreibe(antwortEl, antwort, () => {
+        n++; zaehlerEl.textContent = n; beschaeftigt = false; chipBox.querySelectorAll('button').forEach((c) => (c.disabled = false));
+      });
+    }, ruhig ? 50 : 650);
+  }
+  FRAGEN.forEach((q) => {
+    const b = document.createElement('button'); b.type = 'button'; b.className = 'chip'; b.textContent = '„' + q.f + '“';
+    b.addEventListener('click', () => frage(q.f, q.a)); chipBox.appendChild(b);
+  });
+  form.addEventListener('submit', (e) => { e.preventDefault(); const t = feld.value; feld.value = ''; frage(t); });
+  blase('Na? Frag mich was, Master. Tipp links auf einen Satz oder schreib selbst.', 'er');
+
+  if (!window.gsap || !window.ScrollTrigger) return;
+  gsap.registerPlugin(ScrollTrigger);
+
+  // ---------- Text in Wörter teilen (Wort-Masken) ----------
+  function teile(el) {
+    const text = el.textContent.trim();
+    el.setAttribute('aria-label', text.replace(/\*/g, ''));
+    el.innerHTML = text.split(/\s+/).map((w) => {
+      const ak = w.includes('*');
+      return `<span class="wort${ak ? ' ak' : ''}" aria-hidden="true"><span>${w.replace(/\*/g, '')}</span></span>`;
+    }).join(' ');
+    return el.querySelectorAll('.wort > span');
+  }
+  const heroWoerter = teile($('[data-split]'));
+  if (!ruhig) {
+    gsap.timeline({ defaults: { ease: 'power4.out' }, delay: .15 })
+      .from('.nav', { y: -20, autoAlpha: 0, duration: .8 })
+      .from(heroWoerter, { yPercent: 115, rotate: 4, duration: 1.2, stagger: .08 }, 0)
+      .from('.hero [data-einblenden]', { y: 24, autoAlpha: 0, duration: .8, stagger: .1 }, '-=.6');
+  }
+
+  // Navigation verglasen
+  ScrollTrigger.create({ start: 80, onToggle: (s) => $('.nav').classList.toggle('verglast', s.isActive) });
+  // Nav: helle Variante über dem Creme-Abschnitt, blendet beim Runterscrollen aus
+  ScrollTrigger.create({ trigger: '.galerie', start: 'top 60px', end: 'bottom 60px', onToggle: (s) => $('.nav').classList.toggle('hell', s.isActive) });
+  ScrollTrigger.create({ start: 400, end: 'max', onUpdate: (s) => { if (menue.getAttribute('aria-expanded') !== 'true') $('.nav').classList.toggle('weg', s.direction === 1); } });
+  ScrollTrigger.create({ start: 0, end: 400, onToggle: (s) => { if (s.isActive) $('.nav').classList.remove('weg'); } });
+  // Schluss-Knopf: zum Chat, Feld fokussieren, Kugel pulsieren
+  $('#cta').addEventListener('click', () => {
+    document.getElementById('sprich').scrollIntoView({ behavior: ruhig ? 'auto' : 'smooth', block: 'center' });
+    setTimeout(() => { feld.focus({ preventScroll: true }); dispatchEvent(new Event('jarvis-puls')); mini.classList.remove('puls'); void mini.offsetWidth; mini.classList.add('puls'); }, ruhig ? 0 : 900);
+  });
+
+  if (!ruhig) {
+    // Zeilen-Reveal
+    document.querySelectorAll('[data-zeilen]').forEach((el) => {
+      gsap.from(teile(el), { yPercent: 110, duration: 1, ease: 'expo.out', stagger: .05, scrollTrigger: { trigger: el, start: 'top 88%' } });
+    });
+    // Einblenden unterhalb des Heros
+    gsap.utils.toArray('.abschnitt [data-einblenden]').forEach((el) => {
+      gsap.from(el, { y: 30, autoAlpha: 0, duration: .9, ease: 'power3.out', scrollTrigger: { trigger: el, start: 'top 88%' } });
+    });
+    // Clip-Path-Enthüllung der Kacheln
+    gsap.utils.toArray('[data-clip]').forEach((el) => {
+      gsap.fromTo(el, { clipPath: 'inset(100% 0% 0% 0% round 26px)' }, { clipPath: 'inset(0% 0% 0% 0% round 26px)', duration: 1.3, ease: 'expo.out',
+        scrollTrigger: { trigger: el, start: 'top 90%' }, clearProps: 'clipPath' });
+    });
+    // Handy-Mockup: kleine Tiefe
+    gsap.from('.handy', { y: 80, rotate: 3, autoAlpha: 0, duration: 1.2, ease: 'expo.out', scrollTrigger: { trigger: '.handy', start: 'top 90%' } });
+    // Zahlen hochzählen
+    gsap.utils.toArray('[data-zahl]').forEach((el) => {
+      const ziel = +el.dataset.zahl, o = { v: 0 };
+      gsap.to(o, { v: ziel, duration: 1.8, ease: 'power2.out', scrollTrigger: { trigger: el, start: 'top 90%' }, onUpdate: () => { el.textContent = Math.round(o.v); } });
+    });
+    // SVG-Linie zeichnen
+    document.querySelectorAll('[data-zeichnen] path').forEach((p) => {
+      const l = p.getTotalLength();
+      gsap.fromTo(p, { strokeDasharray: l, strokeDashoffset: l }, { strokeDashoffset: 0, ease: 'none', scrollTrigger: { trigger: p.closest('svg'), start: 'top 90%', end: 'bottom 40%', scrub: true } });
+    });
+    // Laufband mit Neigung
+    const band = $('.band-innen');
+    gsap.to(band, { xPercent: -50, repeat: -1, duration: 24, ease: 'none' });
+    const neigen = gsap.quickTo(band, 'skewX', { duration: .4, ease: 'power3' });
+    ScrollTrigger.create({ onUpdate: (s) => neigen(gsap.utils.clamp(-12, 12, s.getVelocity() / -230)) });
+    ScrollTrigger.addEventListener('scrollEnd', () => neigen(0));
+    // Horizontale Galerie, nur auf großen Bildschirmen gepinnt
+    gsap.matchMedia().add('(min-width: 800px)', () => {
+      const spur = $('.spur'), weg = () => spur.scrollWidth - innerWidth;
+      gsap.to(spur, { x: () => -weg(), ease: 'none', scrollTrigger: { trigger: '.galerie', start: 'top top', end: () => '+=' + weg(), pin: true, scrub: 1, invalidateOnRefresh: true, refreshPriority: 1 } });
+    });
+  }
+
+  // ---------- Cursor, magnetische Knöpfe, 3D-Neigung ----------
+  if (matchMedia('(hover: hover) and (pointer: fine)').matches && !ruhig) {
+    const c = $('.cursor');
+    const cx = gsap.quickTo(c, 'x', { duration: .25, ease: 'power3' }), cy = gsap.quickTo(c, 'y', { duration: .25, ease: 'power3' });
+    addEventListener('pointermove', (e) => { cx(e.clientX); cy(e.clientY); });
+    document.querySelectorAll('a, button, [data-tilt], .chip').forEach((el) => {
+      el.addEventListener('pointerenter', () => c.classList.add('gross'));
+      el.addEventListener('pointerleave', () => c.classList.remove('gross'));
+    });
+    document.querySelectorAll('[data-magnet]').forEach((el) => {
+      el.addEventListener('pointermove', (e) => {
+        const r = el.getBoundingClientRect();
+        gsap.to(el, { x: (e.clientX - r.left - r.width / 2) * .35, y: (e.clientY - r.top - r.height / 2) * .35, duration: .4, ease: 'power3.out' });
+      });
+      el.addEventListener('pointerleave', () => gsap.to(el, { x: 0, y: 0, duration: .8, ease: 'elastic.out(1, .4)' }));
+    });
+    document.querySelectorAll('[data-tilt]').forEach((el) => {
+      el.addEventListener('pointermove', (e) => {
+        const r = el.getBoundingClientRect(), x = (e.clientX - r.left) / r.width - .5, y = (e.clientY - r.top) / r.height - .5;
+        gsap.to(el, { rotateY: x * 10, rotateX: -y * 10, transformPerspective: 900, duration: .4 });
+      });
+      el.addEventListener('pointerleave', () => gsap.to(el, { rotateX: 0, rotateY: 0, duration: .8, ease: 'power3.out' }));
+    });
+  }
+
+  // ---------- Partikel-Wort ----------
+  const pc = $('#partikel');
+  const ctx = pc.getContext('2d');
+  let W = 0, H = 0, teilchen = [], sichtbar = false, laeuft = false;
+  const maus = { x: -1e4, y: -1e4 };
+  function aufbauen() {
+    const dpr = Math.min(devicePixelRatio || 1, 2);
+    W = pc.clientWidth; H = pc.clientHeight; if (!W || !H) return;
+    pc.width = W * dpr; pc.height = H * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    const off = document.createElement('canvas'); off.width = W; off.height = H;
+    const o = off.getContext('2d'); o.fillStyle = '#fff'; o.textAlign = 'center'; o.textBaseline = 'middle';
+    o.font = `800 ${Math.min(W * 0.2, H * 0.95)}px "Bricolage Grotesque", Arial Black, sans-serif`; o.fillText('JARVIS', W / 2, H / 2 + H * .04);
+    const d = o.getImageData(0, 0, W, H).data, schritt = W < 600 ? 4 : 4, alt = teilchen;
+    teilchen = [];
+    for (let y = 0; y < H; y += schritt) for (let x = 0; x < W; x += schritt) {
+      if (d[(y * W + x) * 4 + 3] > 128) { const a = alt[teilchen.length]; teilchen.push({ x: a ? a.x : Math.random() * W, y: a ? a.y : Math.random() * H, zx: x, zy: y, vx: 0, vy: 0 }); }
+    }
+  }
+  function bild() {
+    if (!sichtbar) { laeuft = false; return; }
+    ctx.clearRect(0, 0, W, H); ctx.fillStyle = '#ff6a3d';
+    for (const t of teilchen) {
+      const dx = t.x - maus.x, dy = t.y - maus.y, d2 = dx * dx + dy * dy;
+      if (d2 < 11000) { const f = (11000 - d2) / 11000 * 5, d = Math.sqrt(d2) + .01; t.vx += dx / d * f; t.vy += dy / d * f; }
+      t.vx += (t.zx - t.x) * .055; t.vy += (t.zy - t.y) * .055; t.vx *= .82; t.vy *= .82; t.x += t.vx; t.y += t.vy;
+      ctx.fillRect(t.x, t.y, 2.4, 2.4);
+    }
+    requestAnimationFrame(bild);
+  }
+  new IntersectionObserver(([e]) => { sichtbar = e.isIntersecting; if (sichtbar && !laeuft) { laeuft = true; requestAnimationFrame(bild); } }).observe(pc);
+  pc.addEventListener('pointermove', (e) => { const r = pc.getBoundingClientRect(); maus.x = e.clientX - r.left; maus.y = e.clientY - r.top; });
+  pc.addEventListener('pointerleave', () => { maus.x = maus.y = -1e4; });
+  const fontLaden = document.fonts && document.fonts.load ? document.fonts.load('800 100px "Bricolage Grotesque"') : Promise.resolve();
+  fontLaden.then(() => document.fonts.ready).then(() => { aufbauen(); ScrollTrigger.refresh(); }).catch(aufbauen);
+  let rt; addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(aufbauen, 200); });
+  addEventListener('load', () => ScrollTrigger.refresh());
+})();
+</script>
+
+<!-- Three.js: Jarvis' Gesicht als Partikelwolke, verwandelt sich beim Scrollen -->
+<script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js" } }</script>
+<script type="module">
+import * as THREE from 'three';
+const canvas = document.getElementById('orb');
+const handy = matchMedia('(max-width: 800px)').matches;
+const ruhig = matchMedia('(prefers-reduced-motion: reduce)').matches;
+let renderer;
+try { renderer = new THREE.WebGLRenderer({ canvas, antialias: false, alpha: true, powerPreference: 'high-performance' }); } catch (e) { renderer = null; }
+if (renderer) {
+  renderer.setPixelRatio(Math.min(devicePixelRatio, handy ? 1.5 : 2));
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(35, 1, .1, 100);
+  camera.position.z = 6;
+
+  const N = handy ? 9000 : 14000;
+  const A = new Float32Array(N * 3), B = new Float32Array(N * 3), C = new Float32Array(N * 3);
+  for (let i = 0; i < N; i++) {
+    // A: Kugel (Fibonacci)
+    const y = 1 - (i + .5) / N * 2, rr = Math.sqrt(1 - y * y), th = i * 2.399963;
+    const r = 1.5 * (.94 + Math.random() * .06);
+    A.set([Math.cos(th) * rr * r, y * r, Math.sin(th) * rr * r], i * 3);
+    // B: konzentrische Ringe wie Schallwellen
+    const k = 1 + Math.floor(Math.random() * 9), rb = k * .18, tb = Math.random() * Math.PI * 2;
+    B.set([Math.cos(tb) * rb, Math.sin(tb) * rb, (Math.random() - .5) * .05], i * 3);
+    // C: Würfeloberfläche (Gitter der Hand)
+    const s = 1.15, f = Math.floor(Math.random() * 6), u = (Math.random() * 2 - 1) * s, v = (Math.random() * 2 - 1) * s, sg = f % 2 ? s : -s;
+    const q = [[sg, u, v], [u, sg, v], [u, v, sg]][f >> 1];
+    C.set(q, i * 3);
+  }
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute('position', new THREE.BufferAttribute(A, 3));
+  geo.setAttribute('aA', new THREE.BufferAttribute(A, 3));
+  geo.setAttribute('aB', new THREE.BufferAttribute(B, 3));
+  geo.setAttribute('aC', new THREE.BufferAttribute(C, 3));
+  geo.boundingSphere = new THREE.Sphere(new THREE.Vector3(), 4);
+
+  const NOISE = `
+vec3 mod289(vec3 x){return x-floor(x*(1.0/289.0))*289.0;}
+vec4 mod289(vec4 x){return x-floor(x*(1.0/289.0))*289.0;}
+vec4 permute(vec4 x){return mod289(((x*34.0)+1.0)*x);}
+vec4 taylorInvSqrt(vec4 r){return 1.79284291400159-0.85373472095314*r;}
+float snoise(vec3 v){
+  const vec2 C=vec2(1.0/6.0,1.0/3.0); const vec4 D=vec4(0.0,0.5,1.0,2.0);
+  vec3 i=floor(v+dot(v,C.yyy)); vec3 x0=v-i+dot(i,C.xxx);
+  vec3 g=step(x0.yzx,x0.xyz); vec3 l=1.0-g; vec3 i1=min(g.xyz,l.zxy); vec3 i2=max(g.xyz,l.zxy);
+  vec3 x1=x0-i1+C.xxx; vec3 x2=x0-i2+C.yyy; vec3 x3=x0-D.yyy;
+  i=mod289(i);
+  vec4 p=permute(permute(permute(i.z+vec4(0.0,i1.z,i2.z,1.0))+i.y+vec4(0.0,i1.y,i2.y,1.0))+i.x+vec4(0.0,i1.x,i2.x,1.0));
+  float n_=0.142857142857; vec3 ns=n_*D.wyz-D.xzx;
+  vec4 j=p-49.0*floor(p*ns.z*ns.z); vec4 x_=floor(j*ns.z); vec4 y_=floor(j-7.0*x_);
+  vec4 x=x_*ns.x+ns.yyyy; vec4 y=y_*ns.x+ns.yyyy; vec4 h=1.0-abs(x)-abs(y);
+  vec4 b0=vec4(x.xy,y.xy); vec4 b1=vec4(x.zw,y.zw);
+  vec4 s0=floor(b0)*2.0+1.0; vec4 s1=floor(b1)*2.0+1.0; vec4 sh=-step(h,vec4(0.0));
+  vec4 a0=b0.xzyw+s0.xzyw*sh.xxyy; vec4 a1=b1.xzyw+s1.xzyw*sh.zzww;
+  vec3 p0=vec3(a0.xy,h.x); vec3 p1=vec3(a0.zw,h.y); vec3 p2=vec3(a1.xy,h.z); vec3 p3=vec3(a1.zw,h.w);
+  vec4 norm=taylorInvSqrt(vec4(dot(p0,p0),dot(p1,p1),dot(p2,p2),dot(p3,p3)));
+  p0*=norm.x; p1*=norm.y; p2*=norm.z; p3*=norm.w;
+  vec4 m=max(0.6-vec4(dot(x0,x0),dot(x1,x1),dot(x2,x2),dot(x3,x3)),0.0); m=m*m;
+  return 42.0*dot(m*m,vec4(dot(p0,x0),dot(p1,x1),dot(p2,x2),dot(p3,x3)));
+}`;
+  const U = {
+    uZeit: { value: 0 }, uMorph: { value: 0 }, uStaerke: { value: .34 }, uPuls: { value: 0 }, uPR: { value: renderer.getPixelRatio() }, uSize: { value: handy ? 1.9 : 2.4 },
+    uA: { value: new THREE.Color('#ff8a4d') }, uB: { value: new THREE.Color('#8a2a0e') }, uC: { value: new THREE.Color('#ffe9d6') },
+  };
+  const mat = new THREE.ShaderMaterial({
+    uniforms: U, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
+    vertexShader: NOISE + `
+      attribute vec3 aA; attribute vec3 aB; attribute vec3 aC;
+      uniform float uZeit, uMorph, uStaerke, uPuls, uPR, uSize; varying float vN;
+      void main(){
+        float m1 = smoothstep(0.,1.,clamp(uMorph,0.,1.));
+        float m2 = smoothstep(0.,1.,clamp(uMorph-1.,0.,1.));
+        float wB = clamp(1.-abs(clamp(uMorph,0.,2.)-1.),0.,1.);
+        vec3 p = mix(mix(aA,aB,m1),aC,m2);
+        p.z += sin(length(p.xy)*7.-uZeit*3.)*.16*wB;
+        float n = snoise(p*.9+uZeit*.22);
+        float amp = uStaerke*(1.-.65*wB-.55*m2);
+        p += normalize(p+vec3(.0001))*n*amp;
+        p *= 1.+uPuls*.09;
+        vN = n;
+        vec4 mv = modelViewMatrix*vec4(p,1.);
+        gl_PointSize = uSize*uPR*(6./-mv.z)*(1.+.45*n+uPuls*.5);
+        gl_Position = projectionMatrix*mv;
+      }`,
+    fragmentShader: `
+      uniform vec3 uA, uB, uC; varying float vN;
+      void main(){
+        float d = length(gl_PointCoord-.5); if(d>.5) discard;
+        float a = smoothstep(.5,0.,d);
+        vec3 col = mix(uB,uA,smoothstep(-.5,.6,vN)); col = mix(col,uC,pow(a,4.)*.7);
+        gl_FragColor = vec4(col, a*(.5+.35*vN+.25));
+      }`,
+  });
+  const orb = new THREE.Points(geo, mat);
+  scene.add(orb);
+
+  // Layout: Desktop rechts, Handy oben
+  let basis = 1, ox = 0, oy = 0;
+  function groesse() {
+    const w = innerWidth, h = innerHeight; renderer.setSize(w, h, false);
+    camera.aspect = w / h; camera.updateProjectionMatrix();
+    const sh = 2 * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) * camera.position.z, sw = sh * camera.aspect;
+    basis = Math.min(.9, sw / 3.5, sh / 3.4) * (handy ? .8 : 1);
+    if (camera.aspect > 1.05) { ox = sw * .22; oy = 0; } else { ox = 0; oy = sh * .2; }
+  }
+  addEventListener('resize', groesse); groesse();
+
+  const maus = { x: 0, y: 0 };
+  addEventListener('pointermove', (e) => { maus.x = e.clientX / innerWidth - .5; maus.y = e.clientY / innerHeight - .5; });
+  addEventListener('jarvis-puls', () => { U.uPuls.value = 1; });
+
+  let aktiv = true;
+  new IntersectionObserver(([e]) => { aktiv = e.isIntersecting; }).observe(document.getElementById('buehne'));
+  const uhr = new THREE.Clock();
+  let ry = 0, rx = 0;
+  renderer.setAnimationLoop(() => {
+    if (!aktiv) return;
+    const t = uhr.getElapsedTime();
+    U.uZeit.value = ruhig ? 0 : t;
+    U.uPuls.value *= .94;
+    const morph = U.uMorph.value, wB = Math.max(0, Math.min(1, 1 - Math.abs(morph - 1))), m2 = Math.max(0, Math.min(1, morph - 1));
+    const zielY = maus.x * .8 + (ruhig ? 0 : Math.sin(t * .3) * .55 * (1 - wB));
+    const zielX = maus.y * .5 + m2 * .55;
+    ry += (zielY - ry) * .05; rx += (zielX - rx) * .05;
+    orb.rotation.set(rx, ry, 0);
+    orb.scale.setScalar(basis);
+    orb.position.set(ox, oy, 0);
+    renderer.render(scene, camera);
+  });
+  requestAnimationFrame(() => canvas.classList.add('da'));
+
+  // Gepinnte Verwandlung: Gehirn -> Stimme -> Hand
+  if (window.gsap && window.ScrollTrigger && !ruhig) {
+    const morph = document.getElementById('verwandlung');
+    const [p1, p2, p3] = morph.querySelectorAll('.panel');
+    // Desktop: gepinnt. Handy: Panels untereinander, immer sichtbar, nur die Kugel verwandelt sich.
+    gsap.matchMedia().add({ gross: '(min-width: 761px)', klein: '(max-width: 760px)' }, (ctx) => {
+      if (ctx.conditions.gross) {
+        morph.classList.add('an');
+        gsap.set([p2, p3], { autoAlpha: 0 });
+        const T = gsap.timeline({ scrollTrigger: { trigger: morph, start: 'top top', end: '+=320%', pin: true, scrub: .6, refreshPriority: 2, invalidateOnRefresh: true } });
+        T.to('.balken i', { scaleX: 1, duration: 4, ease: 'none' }, 0)
+          .to(U.uMorph, { value: 1, duration: 1, ease: 'none' }, .6)
+          .to(p1, { autoAlpha: 0, y: -40, duration: .4 }, .6)
+          .fromTo(p2, { autoAlpha: 0, y: 40 }, { autoAlpha: 1, y: 0, duration: .4 }, 1.2)
+          .to(U.uMorph, { value: 2, duration: 1, ease: 'none' }, 2)
+          .to(p2, { autoAlpha: 0, y: -40, duration: .4 }, 2)
+          .fromTo(p3, { autoAlpha: 0, y: 40 }, { autoAlpha: 1, y: 0, duration: .4 }, 2.6);
+        return () => { morph.classList.remove('an'); gsap.set([p1, p2, p3], { clearProps: 'all' }); };
+      }
+      U.uMorph.value = 0;
+      gsap.to(U.uMorph, { value: 2, ease: 'none', scrollTrigger: { trigger: morph, start: 'top 70%', end: 'bottom 85%', scrub: .6 } });
+    });
+    // Hero: Kugel atmet stärker beim Wegscrollen
+    gsap.to(U.uStaerke, { value: .6, ease: 'none', scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true } });
+    ScrollTrigger.refresh();
+  }
+}
+</script>
+</body>
+</html>

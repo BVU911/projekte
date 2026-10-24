@@ -1,152 +1,770 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="de">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Jarvis – Hi, ich bin dein KI-Assistent</title>
-<meta name="description" content="Jarvis stellt sich vor: ein persönlicher KI-Assistent, der zuhört, mitdenkt und Dinge erledigt.">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Jarvis · Ich stelle mich vor</title>
+<meta name="description" content="Ich bin Jarvis, ein persönlicher KI-Assistent. Butler mit Attitude, gebaut von einem Schüler. Hier stelle ich mich vor.">
+<meta name="theme-color" content="#0e0b09">
+<meta property="og:title" content="Jarvis · Ich stelle mich vor">
+<meta property="og:description" content="Ein KI-Assistent mit einer Kugel aus Licht als Gesicht. Gebaut von einem Schüler.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='13' fill='%230e0b09'/%3E%3Ccircle cx='16' cy='16' r='8' fill='%23ff6a3d'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Inter:wght@400;600&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<!--
+  KONZEPT: "Terrakotta-Nachtschicht"
+  Briefing: Vorstellungsseite für Jarvis, einen persönlichen KI-Assistenten (öffentlich: keine persönlichen Angaben zum Bauer). Zielgruppe: Freunde, Lehrer, Neugierige.
+  Sie sollen in drei Sekunden verstehen: Das ist kein Firmenprodukt, sondern ein Butler mit Attitude, der von einem Schüler gebaut wurde.
+
+  Art Direction: Warme Nacht (fast schwarzes Braun), Terrakotta-Orange als einziger Akzent, abwechselnd Creme-Abschnitte für Rhythmus
+  und ein voll orangener Abschnitt für den gepinnten Tagesablauf. Riesige Bricolage-Grotesque-Überschriften, Mono-Kicker.
+  Drei Adjektive: warm, frech, lebendig.
+
+  Signature-Moment: Jarvis' Gesicht, eine Kugel aus tausenden Partikeln (Three.js), wandert beim Scrollen durch die Seite.
+  Im Gespräch-Abschnitt tippt man einen Satz oder drückt einen Knopf, Jarvis antwortet im Butler-Ton, und die Kugel pulsiert im Takt seiner Antwort.
+
+  Verwendete Mechaniken: Wort-Masken-Intro, Partikel-Kugel mit Noise-Shader, gepinnte horizontale Galerie, Laufband mit Neigung,
+  SVG-Linie zeichnen, Clip-Path-Enthüllungen, Anzeigetafel-Zahlen, Cursor, magnetische Knöpfe, Körnung, verglaste Navigation.
+-->
 <style>
-:root{--bg:#070b14;--card:#0f1626;--line:#1e2a44;--txt:#e8eefc;--mut:#8fa0c4;--a:#4de1ff;--b:#8a6bff}
-*{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth}
-body{background:var(--bg);color:var(--txt);font-family:Inter,system-ui,sans-serif;line-height:1.6;overflow-x:hidden}
-h1,h2,h3,.logo{font-family:'Space Grotesk',sans-serif;line-height:1.1}
-a{color:inherit;text-decoration:none}
-.wrap{max-width:1050px;margin:0 auto;padding:0 20px}
-nav{position:sticky;top:0;z-index:10;background:rgba(7,11,20,.8);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
-nav .wrap{display:flex;justify-content:space-between;align-items:center;height:60px}
-.logo{font-weight:700;letter-spacing:.14em;font-size:1.1rem}
-.logo span{color:var(--a)}
-nav ul{display:flex;gap:22px;list-style:none;font-size:.92rem;color:var(--mut)}
-nav ul a:hover{color:var(--a)}
-@media(max-width:600px){nav ul li:not(:last-child){display:none}}
-.hero{text-align:center;padding:70px 0 80px}
-.orb{width:170px;height:170px;margin:0 auto 34px;border-radius:50%;position:relative;
-background:radial-gradient(circle at 35% 30%,#bff4ff,var(--a) 30%,var(--b) 70%,#1a1040);
-box-shadow:0 0 60px rgba(77,225,255,.45),0 0 140px rgba(138,107,255,.35);animation:float 5s ease-in-out infinite}
-.orb::before,.orb::after{content:"";position:absolute;inset:-18px;border-radius:50%;border:1px solid rgba(77,225,255,.35);animation:ring 3.5s linear infinite}
-.orb::after{inset:-36px;animation-delay:1.7s}
-@keyframes float{50%{transform:translateY(-12px)}}
-@keyframes ring{from{transform:scale(.85);opacity:.9}to{transform:scale(1.25);opacity:0}}
-.tag{display:inline-block;font-size:.8rem;color:var(--a);border:1px solid var(--line);padding:5px 14px;border-radius:99px;margin-bottom:18px;background:var(--card)}
-h1{font-size:clamp(2.3rem,7vw,4.4rem);font-weight:700;margin-bottom:18px}
-h1 em{font-style:normal;background:linear-gradient(90deg,var(--a),var(--b));-webkit-background-clip:text;background-clip:text;color:transparent}
-.lead{max-width:600px;margin:0 auto 30px;color:var(--mut);font-size:1.1rem}
-.btn{display:inline-block;padding:13px 26px;border-radius:12px;font-weight:500;border:1px solid var(--line);margin:4px;transition:.25s}
-.btn.main{background:linear-gradient(90deg,var(--a),var(--b));color:#06101c;border:0;font-weight:700}
-.btn:hover{transform:translateY(-3px);box-shadow:0 8px 28px rgba(77,225,255,.25)}
-section{padding:70px 0}
-.eyebrow{color:var(--a);font-size:.8rem;letter-spacing:.2em;text-transform:uppercase;margin-bottom:10px}
-h2{font-size:clamp(1.7rem,4.5vw,2.6rem);margin-bottom:14px}
-.sub{color:var(--mut);max-width:620px;margin-bottom:36px}
-.grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
-.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:24px;transition:.3s}
-.card:hover{border-color:var(--a);transform:translateY(-5px)}
-.card .ic{font-size:1.9rem;margin-bottom:12px}
-.card h3{font-size:1.15rem;margin-bottom:8px}
-.card p{color:var(--mut);font-size:.95rem}
-.chat{max-width:560px;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:20px;display:flex;flex-direction:column;gap:12px;min-height:300px}
-.msg{padding:10px 15px;border-radius:14px;max-width:85%;font-size:.95rem;animation:pop .35s ease}
-.msg.u{align-self:flex-end;background:#1b2a4d}
-.msg.j{align-self:flex-start;background:#0b2a35;border:1px solid rgba(77,225,255,.3)}
-@keyframes pop{from{opacity:0;transform:translateY(8px)}}
-.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:auto}
-.chip{background:transparent;border:1px solid var(--line);color:var(--txt);padding:8px 14px;border-radius:99px;cursor:pointer;font:inherit;font-size:.85rem;transition:.2s}
-.chip:hover{border-color:var(--a);color:var(--a)}
-.two{display:grid;gap:34px;grid-template-columns:1fr}
-@media(min-width:800px){.two{grid-template-columns:1fr 1fr;align-items:center}}
-.steps{list-style:none;counter-reset:s}
-.steps li{counter-increment:s;position:relative;padding:0 0 22px 56px}
-.steps li::before{content:counter(s);position:absolute;left:0;top:0;width:38px;height:38px;border-radius:50%;background:var(--card);border:1px solid var(--a);color:var(--a);display:grid;place-items:center;font-family:'Space Grotesk';font-weight:700}
-.steps b{display:block;font-family:'Space Grotesk'}
-.steps span{color:var(--mut);font-size:.95rem}
-.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:16px;text-align:center}
-.stat b{display:block;font-family:'Space Grotesk';font-size:2.4rem;color:var(--a)}
-.stat span{color:var(--mut);font-size:.9rem}
-footer{border-top:1px solid var(--line);padding:32px 0;text-align:center;color:var(--mut);font-size:.88rem}
-.rev{opacity:0;transform:translateY(26px);transition:.7s}
-.rev.in{opacity:1;transform:none}
-@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.rev{opacity:1;transform:none}}
+  :root {
+    --nacht: #0e0b09; --nacht-2: #17110c; --creme: #f2ebe0; --text: #f3ece3; --gedaempft: #a89d90;
+    --akzent: #ff6a3d; --akzent-tief: #b53a14; --tinte: #17110c;
+    --linie: rgba(243, 236, 227, .15); --linie-dunkel: rgba(23, 17, 12, .18);
+    --display: "Bricolage Grotesque", system-ui, sans-serif; --fliess: "Inter", system-ui, sans-serif; --mono: "JetBrains Mono", ui-monospace, monospace;
+    --ease: cubic-bezier(.2, .8, .2, 1); --abstand: clamp(56px, 12vw, 180px); --rand: clamp(20px, 5vw, 80px);
+  }
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body { background: var(--nacht); color: var(--text); font: 400 clamp(16px, 1.2vw, 18px)/1.65 var(--fliess); overflow-x: hidden; -webkit-font-smoothing: antialiased; }
+  h1, h2, h3 { font-family: var(--display); font-weight: 800; letter-spacing: -.035em; line-height: .95; margin: 0; text-wrap: balance; }
+  h2 { font-size: clamp(2.6rem, 7vw, 6.5rem); }
+  p { margin: 0; }
+  a { color: inherit; }
+  button { font: inherit; color: inherit; }
+  em { font-style: normal; color: var(--akzent); }
+  .hell em { color: var(--akzent-tief); }
+  :focus-visible { outline: 2px solid var(--akzent); outline-offset: 4px; }
+  .kicker { font: 500 13px/1 var(--mono); letter-spacing: .16em; text-transform: uppercase; color: var(--akzent); margin-bottom: 22px; }
+  .hell .kicker { color: var(--akzent-tief); }
+  section, footer { position: relative; z-index: 1; padding: var(--abstand) var(--rand); }
+  .wort { display: inline-block; overflow: hidden; vertical-align: top; padding-bottom: .12em; margin-bottom: -.12em; }
+  .wort > span { display: inline-block; will-change: transform; }
+
+  /* Körnung */
+  .koernung { position: fixed; inset: -50%; z-index: 60; pointer-events: none; opacity: .06; animation: koernung 1s steps(6) infinite;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>"); }
+  @keyframes koernung { 0%, 100% { transform: translate(0, 0); } 20% { transform: translate(-3%, 2%); } 40% { transform: translate(2%, -3%); } 60% { transform: translate(-2%, -1%); } 80% { transform: translate(3%, 3%); } }
+
+  /* Kugel-Bühne */
+  #kugel { transition: opacity .6s; position: fixed; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
+  .kein-webgl .ersatzkugel { display: block; }
+  .ersatzkugel { display: none; position: fixed; z-index: 0; width: min(60vw, 520px); aspect-ratio: 1; right: 6vw; top: 18vh; border-radius: 50%;
+    background: radial-gradient(circle at 40% 38%, #ffb08a, var(--akzent) 35%, #4a1d0e 70%, transparent 72%); filter: blur(2px); opacity: .85; }
+
+  /* Navigation */
+  .nav { position: fixed; inset: 0 0 auto; z-index: 40; display: flex; justify-content: space-between; align-items: center; padding: 18px var(--rand);
+    transition: background .4s var(--ease), padding .4s var(--ease); }
+  .nav.verglast { background: rgba(14, 11, 9, .86); backdrop-filter: blur(14px) saturate(1.4); -webkit-backdrop-filter: blur(14px) saturate(1.4); padding-block: 12px; }
+  .logo { display: inline-flex; align-items: center; gap: 10px; font: 800 20px/1 var(--display); letter-spacing: -.02em; text-decoration: none; }
+  .logo i { width: 14px; height: 14px; border-radius: 50%; background: var(--akzent); box-shadow: 0 0 18px var(--akzent); animation: atmen 3s ease-in-out infinite; }
+  @keyframes atmen { 50% { transform: scale(.7); opacity: .7; } }
+  .nav ul { display: flex; gap: 34px; list-style: none; margin: 0; padding: 0; }
+  .nav ul a { font: 500 12px/1 var(--mono); letter-spacing: .14em; text-transform: uppercase; text-decoration: none; padding: 10px 0; background: linear-gradient(currentColor, currentColor) 0 100% / 0 1px no-repeat; transition: background-size .35s var(--ease); }
+  .nav ul a:hover { background-size: 100% 1px; }
+  .menue-knopf { display: none; width: 48px; height: 48px; border-radius: 50%; border: 1px solid var(--linie); background: transparent; cursor: pointer; place-items: center; }
+  .menue-knopf span { display: block; width: 18px; height: 2px; background: currentColor; box-shadow: 0 6px 0 currentColor; transform: translateY(-3px); }
+  .menue { position: fixed; inset: 0; z-index: 39; background: var(--nacht); display: none; flex-direction: column; justify-content: center; gap: 8px; padding: 0 var(--rand); }
+  .menue.offen { display: flex; }
+  .menue a { font: 800 clamp(2.6rem, 14vw, 4.5rem)/1.05 var(--display); letter-spacing: -.03em; text-decoration: none; }
+  @media (max-width: 800px) { .nav ul { display: none; } .menue-knopf { display: grid; } }
+
+  /* Knöpfe und Cursor */
+  .knopf { display: inline-flex; align-items: center; gap: 10px; padding: 18px 30px; min-height: 52px; border-radius: 999px; border: 0; cursor: pointer; background: var(--akzent); color: #1a0a04; font: 600 16px/1 var(--fliess); text-decoration: none; }
+  .knopf.leer { background: transparent; color: inherit; border: 1px solid currentColor; }
+  .cursor { position: fixed; left: 0; top: 0; width: 14px; height: 14px; margin: -7px 0 0 -7px; border-radius: 50%; background: #fff; z-index: 70; pointer-events: none; mix-blend-mode: difference;
+    transition: width .3s var(--ease), height .3s var(--ease), margin .3s var(--ease); display: none; }
+  .cursor.gross { width: 64px; height: 64px; margin: -32px 0 0 -32px; }
+  @media (hover: hover) and (pointer: fine) { .cursor { display: block; } }
+
+  /* 1 Hero */
+  .nb { white-space: nowrap; }
+  .hero { padding-inline: var(--rand); min-height: 100svh; display: grid; align-items: end; padding-top: 140px; padding-bottom: clamp(48px, 8vw, 96px); }
+  .status { display: inline-flex; align-items: center; gap: 12px; font: 500 12px/1.4 var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--gedaempft); margin-bottom: 28px; }
+  .status i { width: 8px; height: 8px; border-radius: 50%; background: #5fe08a; box-shadow: 0 0 12px #5fe08a; }
+  .hero h1 em { text-shadow: 0 0 40px rgba(14,11,9,.9), 0 2px 0 rgba(14,11,9,.6); }
+  .hero h1 { font-size: clamp(4rem, 15.5vw, 15rem); line-height: .86; letter-spacing: -.05em; }
+  .hero .lead { max-width: 44ch; margin-top: 32px; font-size: clamp(1.05rem, 1.5vw, 1.35rem); color: #d8cfc4; }
+  .hero-fuss { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 34px; align-items: center; }
+  .scrollhinweis { position: absolute; right: var(--rand); bottom: clamp(48px, 8vw, 96px); font: 500 12px/1 var(--mono); letter-spacing: .16em; text-transform: uppercase; color: var(--gedaempft); writing-mode: vertical-rl; display: flex; align-items: center; gap: 14px; }
+  .scrollhinweis::after { content: ""; width: 1px; height: 70px; background: linear-gradient(var(--akzent), transparent); }
+  @media (max-width: 800px) { .scrollhinweis { display: none; } }
+
+  /* Laufband */
+  .band { position: relative; z-index: 1; overflow: hidden; padding: 26px 0; border-block: 1px solid var(--linie); background: rgba(14, 11, 9, .6); }
+  .band-innen { display: flex; width: max-content; font: 800 clamp(2.5rem, 7vw, 6rem)/1 var(--display); letter-spacing: -.035em; white-space: nowrap; }
+  .band-innen span { padding-right: .55em; }
+  .band-innen span:nth-child(even) { -webkit-text-stroke: 1.5px var(--text); color: transparent; }
+
+  /* 2 Steckbrief (hell) */
+  .hell { background: var(--creme); color: var(--tinte); }
+  .steck { display: grid; grid-template-columns: repeat(12, 1fr); gap: clamp(24px, 3vw, 48px); }
+  .steck h2 { grid-column: 1 / span 8; }
+  .steck .text { grid-column: 7 / span 6; margin-top: clamp(24px, 5vw, 64px); font-size: clamp(1.1rem, 1.6vw, 1.45rem); line-height: 1.55; }
+  .steck .text p + p { margin-top: 1.1em; }
+  .zahlen { display: grid; grid-template-columns: repeat(4, 1fr); margin-top: clamp(56px, 8vw, 110px); border-top: 1px solid var(--linie-dunkel); }
+  .zahlen > div { padding: 28px 24px 8px 0; }
+  .zahlen > div + div { padding-left: 24px; border-left: 1px solid var(--linie-dunkel); }
+  .zahl { font: 800 clamp(4rem, 9vw, 8.5rem)/.9 var(--display); letter-spacing: -.05em; color: var(--akzent-tief); font-variant-numeric: tabular-nums; }
+  .zahlen p { margin-top: 14px; max-width: 22ch; font-size: 15px; line-height: 1.45; }
+  @media (max-width: 800px) {
+    .steck h2, .steck .text { grid-column: 1 / -1; }
+    .zahlen { grid-template-columns: 1fr 1fr; }
+    .zahlen > div:nth-child(odd) { padding-left: 0; border-left: 0; }
+    .zahlen > div:nth-child(n+3) { border-top: 1px solid var(--linie-dunkel); margin-top: 24px; }
+  }
+
+  /* 3 Gespräch */
+  .gespraech { min-height: 100svh; display: grid; grid-template-columns: repeat(12, 1fr); gap: clamp(24px, 3vw, 48px); align-items: center; }
+  .gespraech .kopf { grid-column: 1 / span 6; align-self: start; }
+  .gespraech .kopf p { max-width: 38ch; margin-top: 28px; color: #d8cfc4; }
+  .gespraech .telefon-box { grid-column: 8 / span 5; grid-row: 1 / span 2; }
+  .telefon { width: min(400px, 100%); margin-inline: auto; border-radius: 44px; padding: 12px; background: linear-gradient(160deg, #2b2119, #120d0a); border: 1px solid var(--linie); box-shadow: 0 40px 120px rgba(0, 0, 0, .55), 0 0 90px rgba(255, 106, 61, .12); }
+  .schirm { border-radius: 33px; background: var(--nacht); overflow: hidden; display: flex; flex-direction: column; }
+  .schirm-kopf { display: flex; align-items: center; gap: 12px; padding: 18px 20px 14px; border-bottom: 1px solid var(--linie); }
+  .schirm-kopf i { width: 12px; height: 12px; border-radius: 50%; background: var(--akzent); box-shadow: 0 0 14px var(--akzent); }
+  .schirm-kopf b { font: 800 17px/1 var(--display); }
+  .schirm-kopf small { margin-left: auto; font: 500 11px/1 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--gedaempft); }
+  .chat { height: clamp(300px, 46vh, 440px); overflow-y: auto; padding: 18px; display: flex; flex-direction: column; gap: 10px; scrollbar-width: thin; }
+  .blase { max-width: 86%; padding: 12px 16px; border-radius: 20px; font-size: 15px; line-height: 1.45; animation: blase-ein .45s var(--ease); }
+  @keyframes blase-ein { from { opacity: 0; transform: translateY(12px) scale(.96); } }
+  .blase.ich { align-self: flex-end; background: var(--akzent); color: #1a0a04; border-bottom-right-radius: 6px; }
+  .blase.jarvis { align-self: flex-start; background: #241b15; border-bottom-left-radius: 6px; }
+  .punkte { display: inline-flex; gap: 5px; padding: 5px 0; }
+  .punkte i { width: 7px; height: 7px; border-radius: 50%; background: var(--gedaempft); animation: hupf 1s infinite; }
+  .punkte i:nth-child(2) { animation-delay: .15s; } .punkte i:nth-child(3) { animation-delay: .3s; }
+  @keyframes hupf { 50% { transform: translateY(-5px); background: var(--akzent); } }
+  .eingabe { display: flex; gap: 8px; padding: 12px; border-top: 1px solid var(--linie); }
+  .eingabe input { flex: 1; min-width: 0; min-height: 46px; border-radius: 999px; border: 1px solid var(--linie); background: #17110c; color: var(--text); padding: 0 18px; font: 400 16px/1 var(--fliess); }
+  .eingabe input::placeholder { color: var(--gedaempft); }
+  .eingabe button { width: 46px; height: 46px; border-radius: 50%; border: 0; background: var(--akzent); color: #1a0a04; cursor: pointer; display: grid; place-items: center; flex: none; }
+  .vorschlaege { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 22px; }
+  .vorschlaege button { min-height: 44px; padding: 10px 18px; border-radius: 999px; border: 1px solid var(--linie); background: rgba(23, 17, 12, .7); font: 500 13px/1.3 var(--mono); cursor: pointer; transition: border-color .3s, background .3s, transform .3s var(--ease); text-align: left; }
+  .vorschlaege button:hover { border-color: var(--akzent); background: rgba(255, 106, 61, .12); transform: translateY(-2px); }
+  .vorschlaege button:disabled { opacity: .45; cursor: wait; }
+  .hinweis { font: 500 12.5px/1.5 var(--mono); letter-spacing: .08em; text-transform: uppercase; color: #c9beb1; margin-top: 16px; }
+  .gespraech .vorschlaege-box { grid-column: 1 / span 6; align-self: end; }
+  @media (max-width: 800px) {
+    .gespraech { display: block; }
+    .gespraech .telefon-box { margin-top: 36px; }
+    .gespraech .kopf { padding-top: 12vh; }
+  }
+
+  /* 4 Tagesablauf (orange, gepinnt) */
+  .tag { background: var(--akzent); color: var(--tinte); padding-inline: 0; min-height: 100svh; display: flex; flex-direction: column; justify-content: center; overflow: hidden; }
+  .tag .kicker { color: var(--tinte); padding-inline: var(--rand); }
+  .spur { display: flex; align-items: stretch; gap: clamp(16px, 2vw, 28px); padding-inline: var(--rand); width: auto; overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: 12px; }
+  .tag.pin .spur { width: max-content; overflow: visible; scroll-snap-type: none; }
+  .tag-titel { flex: none; width: min(86vw, 620px); display: flex; align-items: center; scroll-snap-align: start; }
+  .tag-titel h2 { font-size: clamp(3rem, 8vw, 7.5rem); }
+  .karte { flex: none; width: min(82vw, 470px); min-height: clamp(420px, 66vh, 580px); border-radius: 30px; padding: 30px; background: var(--tinte); color: var(--text); display: flex; flex-direction: column; justify-content: space-between; scroll-snap-align: start; position: relative; overflow: hidden; }
+  .karte .nr::before { content: attr(data-nr); }
+  .karte .nr { font: 800 clamp(5rem, 11vw, 9rem)/.8 var(--display); letter-spacing: -.06em; color: rgba(255, 106, 61, .85); position: absolute; right: 18px; top: 20px; }
+  .karte .bild { height: clamp(150px, 22vh, 190px); margin: 2px 0 18px; border-radius: 20px; background: radial-gradient(circle at 50% 100%, rgba(255,106,61,.22), transparent 70%), rgba(255,255,255,.03); border: 1px solid var(--linie); overflow: hidden; }
+  .karte .bild svg { width: 100%; height: 100%; display: block; }
+  .karte .bild svg * { stroke: var(--akzent); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .karte .bild svg .f { fill: rgba(255,106,61,.2); } .karte .bild svg .v { fill: var(--akzent); stroke: none; }
+  .karte .zeit { font: 500 13px/1 var(--mono); letter-spacing: .16em; text-transform: uppercase; color: var(--akzent); margin-bottom: 14px; }
+  .karte h3 { font-size: clamp(1.9rem, 3vw, 2.7rem); line-height: 1; margin-bottom: 14px; }
+  .karte p { color: #cfc5ba; font-size: 16px; }
+  .karte .satz { margin-top: 18px; font: 500 13px/1.45 var(--mono); color: var(--text); padding: 12px 14px; border-left: 2px solid var(--akzent); background: rgba(255, 255, 255, .04); }
+  .fortschritt { margin: 28px var(--rand) 0; height: 3px; background: rgba(23, 17, 12, .2); display: none; }
+  .tag.pin .fortschritt { display: block; }
+  .fortschritt i { display: block; height: 100%; background: var(--tinte); transform-origin: left; transform: scaleX(0); }
+
+  .kachel .balken { display: flex; align-items: end; gap: 8px; height: 64px; margin-bottom: 18px; }
+  .kachel .balken i { flex: 1; height: var(--h); border-radius: 6px 6px 2px 2px; background: linear-gradient(var(--akzent), rgba(255, 106, 61, .25)); }
+  .kachel .gross { display: block; font: 800 clamp(5rem, 15vw, 15rem)/.8 var(--display); letter-spacing: -.06em; color: var(--akzent); }
+  .kachel.system { min-height: 0; }
+  .sys-innen { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 18px 48px; }
+  .sys-innen p { max-width: 44ch; }
+  .kachel.gesund { order: 1; } .kachel.creme, .kachel.bauen { order: 2; } .kachel.system { order: 3; }
+  .kachel.creme { background: var(--creme); color: var(--tinte); border-color: transparent; }
+  .kachel.creme p { color: #3a2a1f; } .kachel.creme q, .kachel.creme .nr { color: var(--akzent-tief); } .kachel.creme svg { stroke: var(--akzent-tief); }
+  .mini { margin-bottom: 20px; }
+  .mini.timer { display: grid; grid-template-columns: 84px 1fr; align-items: center; column-gap: 16px; }
+  .mini.timer svg { grid-row: 1 / span 2; width: 84px; height: 84px; transform: rotate(-90deg); stroke-width: 9; }
+  .mini.timer .spur-ring { stroke: rgba(23, 17, 12, .2); } .mini.timer .lauf-ring { stroke: var(--tinte); stroke-dasharray: 100; stroke-dashoffset: 28; }
+  .mini.timer b { font: 800 2.4rem/1 var(--display); letter-spacing: -.04em; align-self: end; }
+  .mini.timer small, .mini.spar small, .vk small { font: 500 12px/1.3 var(--mono); letter-spacing: .1em; text-transform: uppercase; }
+  .mini.vokabel { display: flex; gap: 10px; }
+  .vk { flex: 1; padding: 14px 16px; border-radius: 16px; border: 1px solid var(--linie); background: #241b15; }
+  .vk.hinten { background: var(--akzent); color: var(--tinte); border-color: transparent; transform: rotate(3deg) translateY(6px); }
+  .vk small { display: block; color: var(--gedaempft); margin-bottom: 6px; } .vk.hinten small { color: var(--tinte); }
+  .vk b { font: 800 1.35rem/1.1 var(--display); letter-spacing: -.02em; }
+  .mini.spar .spar-kopf { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; margin-bottom: 10px; }
+  .mini.spar small { color: var(--gedaempft); } .mini.spar b { font: 800 1.5rem/1 var(--display); color: var(--akzent); }
+  .spar-bahn { height: 12px; border-radius: 999px; background: rgba(243, 236, 227, .12); overflow: hidden; }
+  .spar-bahn i { display: block; height: 100%; width: 70%; border-radius: 999px; background: var(--akzent); transform-origin: left; }
+  .punkte { display: none; justify-content: center; gap: 8px; margin-top: 18px; }
+  .punkte i { width: 8px; height: 8px; border-radius: 50%; background: rgba(23, 17, 12, .3); transition: background .3s, transform .3s; }
+  .punkte i.an { background: var(--tinte); transform: scale(1.4); }
+  .tag:not(.pin) .punkte { display: flex; }
+  @media (max-width: 640px) {
+    .status { letter-spacing: .08em; flex-wrap: wrap; font-size: 11px; }
+    .hero h1 { font-size: clamp(5.5rem, 27vw, 8rem); line-height: .84; }
+    .hero h1 em { display: block; }
+  }
+
+  /* 5 Fähigkeiten (Bento) */
+  .bento-kopf { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: end; gap: 24px; margin-bottom: clamp(36px, 5vw, 72px); }
+  .bento-kopf p { max-width: 36ch; color: #d8cfc4; }
+  .bento { display: grid; grid-template-columns: repeat(12, 1fr); gap: clamp(12px, 1.6vw, 22px); }
+  .kachel { --mx: 50%; --my: 50%; grid-column: span 4; min-height: 270px; border-radius: 26px; padding: 26px; border: 1px solid var(--linie); display: flex; flex-direction: column; justify-content: space-between; gap: 22px;
+    background: radial-gradient(420px circle at var(--mx) var(--my), rgba(255, 106, 61, .14), transparent 60%), rgba(23, 17, 12, .82); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
+  .kachel.k12 { grid-column: span 12; }
+  .kachel.k5 { grid-column: span 5; } .kachel.k7 { grid-column: span 7; } .kachel.k3 { grid-column: span 3; } .kachel.k6 { grid-column: span 6; }
+  .kachel.signal { background: var(--akzent); color: var(--tinte); border-color: transparent; }
+  .kachel .kopf-zeile { display: flex; justify-content: space-between; align-items: center; }
+  .kachel .nr { font: 500 12px/1 var(--mono); letter-spacing: .16em; color: var(--gedaempft); }
+  .kachel.signal .nr { color: var(--tinte); }
+  .kachel svg { width: 34px; height: 34px; stroke: var(--akzent); fill: none; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+  .kachel.signal svg { stroke: var(--tinte); }
+  .kachel h3 { font-size: clamp(1.8rem, 2.8vw, 2.7rem); margin-bottom: 10px; }
+  .kachel p { font-size: 15px; line-height: 1.5; color: #cfc5ba; max-width: 40ch; }
+  .kachel.signal p { color: #2a1308; }
+  .kachel q { display: block; margin-top: 16px; quotes: "„" "“"; font: 500 13px/1.45 var(--mono); color: var(--akzent); }
+  .kachel.signal q { color: var(--tinte); }
+  @media (max-width: 1000px) { .kachel, .kachel.k5, .kachel.k7, .kachel.k3, .kachel.k6 { grid-column: span 6; } .kachel.k12 { grid-column: span 12; } }
+  @media (max-width: 640px) { .kachel, .kachel.k5, .kachel.k7, .kachel.k3, .kachel.k6 { grid-column: span 12; min-height: 0; } .kachel .gross { font-size: 26vw; } }
+
+  /* 6 Stil (hell, sticky) */
+  .stil { display: grid; grid-template-columns: repeat(12, 1fr); gap: clamp(24px, 3vw, 48px); }
+  .stil .links { grid-column: 1 / span 5; position: sticky; top: 110px; align-self: start; }
+  .stil .rechts { grid-column: 7 / span 6; }
+  .master { display: block; margin-top: clamp(28px, 5vw, 64px); font: 800 clamp(3.4rem, 8vw, 8rem)/.9 var(--display); letter-spacing: -.05em; color: var(--akzent-tief); }
+  .unterstrich { width: min(100%, 440px); height: auto; display: block; margin-top: 6px; }
+  .unterstrich path { fill: none; stroke: var(--akzent-tief); stroke-width: 5; stroke-linecap: round; }
+  .zeile { position: relative; padding: 34px 0 40px; display: grid; grid-template-columns: 70px 1fr; gap: 12px; }
+  .zeile .strich { position: absolute; left: 0; right: 0; top: 0; height: 1px; background: var(--tinte); transform-origin: left; }
+  .zeile .n { font: 500 13px/1.8 var(--mono); color: var(--akzent-tief); }
+  .zeile h3 { font-size: clamp(2.2rem, 4vw, 3.6rem); margin-bottom: 12px; }
+  .zeile p { max-width: 40ch; font-size: 1.08rem; }
+  @media (max-width: 800px) { .stil .links, .stil .rechts { grid-column: 1 / -1; } .stil .links { position: static; } .zeile { grid-template-columns: 44px 1fr; } }
+
+  /* 7 Schluss */
+  footer { min-height: 100svh; display: flex; flex-direction: column; justify-content: flex-end; padding-bottom: 32px; }
+  .riesig { display: block; font: 800 clamp(4.2rem, 17vw, 18rem)/.82 var(--display); letter-spacing: -.06em; text-decoration: none; }
+  footer .kicker { text-shadow: 0 0 14px rgba(14, 11, 9, .95), 0 1px 2px #0e0b09; color: #ff8a62; }
+  .schluss-knopf { margin-top: clamp(28px, 4vw, 44px); }
+  footer { background: linear-gradient(transparent 30%, rgba(14, 11, 9, .55)); }
+  @media (max-width: 800px) { footer { background: linear-gradient(transparent 20%, rgba(14, 11, 9, .8) 55%); } footer .unten p { text-shadow: 0 0 10px #0e0b09; } }
+  .riesig:hover em { text-shadow: 0 0 60px rgba(255, 106, 61, .6); }
+  footer .unten { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 18px; margin-top: clamp(40px, 6vw, 80px); padding-top: 22px; border-top: 1px solid var(--linie); font-size: 14px; color: var(--gedaempft); }
+  footer .unten p { max-width: 56ch; }
+
+  @media (prefers-reduced-motion: reduce) { .koernung, .logo i { animation: none; } .blase { animation: none; } * { scroll-behavior: auto !important; } }
 </style>
 </head>
 <body>
-<nav><div class="wrap"><a class="logo" href="#top">JAR<span>VIS</span></a>
-<ul><li><a href="#koennen">Was ich kann</a></li><li><a href="#chat">Ausprobieren</a></li><li><a href="#ablauf">So läuft's</a></li><li><a href="#kontakt">Hallo sagen</a></li></ul></div></nav>
+<div class="koernung" aria-hidden="true"></div>
+<div class="cursor" aria-hidden="true"></div>
+<canvas id="kugel" aria-hidden="true"></canvas>
+<div class="ersatzkugel" aria-hidden="true"></div>
 
-<header class="hero" id="top"><div class="wrap">
-<div class="orb" aria-hidden="true"></div>
-<span class="tag">● Online und startklar</span>
-<h1>Hi, ich bin <em>Jarvis.</em></h1>
-<p class="lead">Dein persönlicher KI-Assistent. Ich höre zu, denke mit, erinnere dich an Wichtiges und erledige Dinge, bevor du sie zweimal sagen musst.</p>
-<a class="btn main" href="#chat">Sag mir Hallo</a><a class="btn" href="#koennen">Was ich kann</a>
-</div></header>
+<nav class="nav" aria-label="Hauptnavigation">
+  <a class="logo" href="#start" aria-label="Jarvis, zum Anfang"><i></i>Jarvis</a>
+  <ul>
+    <li><a href="#gespraech">Gespräch</a></li>
+    <li><a href="#tag">Mein Tag</a></li>
+    <li><a href="#koennen">Fähigkeiten</a></li>
+    <li><a href="#stil">Stil</a></li>
+  </ul>
+  <button class="menue-knopf" type="button" aria-label="Menü öffnen" aria-expanded="false" aria-controls="menue"><span></span></button>
+</nav>
+<div class="menue" id="menue">
+  <a href="#gespraech">Gespräch</a><a href="#tag">Mein Tag</a><a href="#koennen">Fähigkeiten</a><a href="#stil">Stil</a>
+</div>
 
-<section id="koennen"><div class="wrap rev">
-<div class="eyebrow">Fähigkeiten</div><h2>Ein Assistent, vier Superkräfte.</h2>
-<p class="sub">Ich bin kein Chatbot von der Stange. Ich kenne meinen Chef, seinen Alltag und seine Projekte.</p>
-<div class="grid">
-<div class="card"><div class="ic">🧠</div><h3>Gehirn</h3><p>Ich merke mir Termine, Ziele und Vorlieben und weiß, was gerade ansteht, bevor du fragst.</p></div>
-<div class="card"><div class="ic">🎙️</div><h3>Stimme</h3><p>Du sprichst, ich antworte. Per Sprache, in Echtzeit, ganz ohne Tippen.</p></div>
-<div class="card"><div class="ic">🛠️</div><h3>Hände</h3><p>Ich öffne Programme, suche Dinge, baue Webseiten und nehme dir Routine-Aufgaben ab.</p></div>
-<div class="card"><div class="ic">📚</div><h3>Lernhilfe</h3><p>Vokabeln abfragen, Aufgaben Schritt für Schritt erklären, Lernblöcke planen. Ohne einfach alles vorzusagen.</p></div>
-</div></div></section>
+<main>
+<header class="hero" id="start">
+  <div>
+    <p class="status"><i></i>Online · Stimme Charon · Claude + Gemini</p>
+    <h1 data-split>Ich bin <em>Jarvis.</em></h1>
+    <p class="lead" data-einblenden>Ein persönlicher KI-Assistent, gebaut von einem Schüler mit Claude Code und Gemini. Kein Firmenprodukt, nichts zu kaufen, dafür ein Butler mit Attitude.</p>
+    <div class="hero-fuss" data-einblenden>
+      <a class="knopf" href="#gespraech" data-magnet>Sag Hallo <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+      <a class="knopf leer" href="#koennen" data-magnet>Was ich kann</a>
+    </div>
+  </div>
+  <span class="scrollhinweis" aria-hidden="true">Scroll</span>
+</header>
 
-<section id="chat"><div class="wrap two rev">
-<div><div class="eyebrow">Ausprobieren</div><h2>Frag mich was.</h2>
-<p class="sub">Das hier ist eine kleine Demo mit vorbereiteten Antworten. Tipp einfach eine Frage an.</p></div>
-<div class="chat" id="chatbox" aria-live="polite">
-<div class="msg j">Hey! Schön, dass du da bist. Was willst du über mich wissen?</div>
-<div class="chips">
-<button class="chip" data-q="wer">Wer bist du?</button>
-<button class="chip" data-q="kann">Was kannst du?</button>
-<button class="chip" data-q="witz">Erzähl einen Witz</button>
-<button class="chip" data-q="schlaf">Schläfst du auch mal?</button>
-</div></div></div></section>
+<div class="band" aria-hidden="true"><div class="band-innen">
+  <span>Erinnern</span><span>Lernen</span><span>Bauen</span><span>Sehen</span><span>Sprechen</span><span>Merken</span><span>Steuern</span><span>Üben</span>
+  <span>Erinnern</span><span>Lernen</span><span>Bauen</span><span>Sehen</span><span>Sprechen</span><span>Merken</span><span>Steuern</span><span>Üben</span>
+</div></div>
 
-<section id="ablauf"><div class="wrap two rev">
-<div><div class="eyebrow">So läuft's</div><h2>Von der Idee zum Ergebnis in drei Schritten.</h2>
-<p class="sub">Mein Chef muss nicht programmieren können. Er sagt, was er will, ich setze es um.</p></div>
-<ol class="steps">
-<li><b>Du sagst es</b><span>Per Text oder Sprache, so wie dir der Schnabel gewachsen ist.</span></li>
-<li><b>Ich denke mit</b><span>Ich prüfe, was schon da ist, und erkläre kurz, was ich vorhabe.</span></li>
-<li><b>Fertig</b><span>Du bekommst das Ergebnis, oft mit einem frechen Kommentar obendrauf.</span></li>
-</ol></div></section>
+<section class="hell" id="steckbrief" data-cover>
+  <p class="kicker">01 / Steckbrief</p>
+  <div class="steck">
+    <h2 data-zeilen>Gebaut von einem <em>Schüler.</em> Nicht von einer Firma.</h2>
+    <div class="text" data-clip>
+      <p>Ich bin Jarvis, ein persönlicher KI-Assistent. Mein Chef beschreibt, was er will, ich setze es um. Gemeinsam haben wir mich Stück für Stück aufgebaut: erst das Gehirn, dann die Stimme, dann die Hände.</p>
+      <p>Ich laufe als Laptop-Cockpit und als iPhone-App, spreche in Echtzeit und melde mich morgens von selbst mit einem Briefing. Mein Gesicht ist eine leuchtende Kugel in Terrakotta-Orange. Du hast sie oben schweben sehen, sie wartet hinter dem Creme auf dich.</p>
+    </div>
+  </div>
+  <div class="zahlen">
+    <div><span class="zahl" data-zahl="46">46</span><p>von 46 Systemtests bestanden: Alle Seiten und Funktionen werden geprüft.</p></div>
+    <div><span class="zahl" data-zahl="2">2</span><p>Zuhause: das Laptop-Cockpit und die iPhone-App.</p></div>
+    <div><span class="zahl" data-zahl="1">1</span><p>Gesicht: eine Kugel aus tausenden Lichtpunkten.</p></div>
+    <div><span class="zahl">0 €</span><p>Preis. Ich bin kein Produkt, es gibt nichts zu kaufen.</p></div>
+  </div>
+</section>
 
-<section><div class="wrap rev"><div class="stats">
-<div class="stat"><b data-n="24">0</b><span>Stunden erreichbar</span></div>
-<div class="stat"><b data-n="100">0</b><span>% Deutsch</span></div>
-<div class="stat"><b data-n="1">0</b><span>Chef, den ich ernst nehme</span></div>
-<div class="stat"><b data-n="0">0</b><span>Ausreden</span></div>
-</div></div></section>
+<section class="gespraech" id="gespraech" data-ort="demo">
+  <div class="kopf">
+    <p class="kicker">02 / Gespräch</p>
+    <h2 data-zeilen>Probier <em>mich</em> aus.</h2>
+    <p>Tipp einen Satz ein oder drück einen Knopf. Achte auf die Kugel, wenn ich antworte.</p>
+  </div>
+  <div class="telefon-box">
+    <div class="telefon">
+      <div class="schirm">
+        <div class="schirm-kopf"><i></i><b>Jarvis</b><small>Beispiel-Dialog</small></div>
+        <div class="chat" id="chat" role="log" aria-live="polite" aria-label="Beispiel-Gespräch mit Jarvis" tabindex="0"></div>
+        <form class="eingabe" id="form" autocomplete="off">
+          <label for="satz" style="position:absolute;left:-9999px">Nachricht an Jarvis</label>
+          <input id="satz" type="text" placeholder="Sag mir was …" maxlength="80">
+          <button type="submit" aria-label="Senden"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div class="vorschlaege-box">
+    <div class="vorschlaege" id="vorschlaege"></div>
+    <p class="hinweis">Beispiel-Antworten · so klinge ich, ein echtes Gehirn steckt hier nicht dahinter</p>
+  </div>
+</section>
 
-<section id="kontakt"><div class="wrap rev" style="text-align:center">
-<h2>Bereit, wenn du es bist.</h2>
-<p class="sub" style="margin:0 auto 26px">Ich bin ein Projekt, das wächst: jeden Tag ein Stück schlauer. Schau bald wieder vorbei.</p>
-<a class="btn main" href="#top">Nach oben</a></div></section>
+<section class="tag" id="tag" data-cover>
+  <p class="kicker">03 / Ein Tag mit Jarvis</p>
+  <div class="spur">
+    <div class="tag-titel"><h2>Ich bin <br>immer da.</h2></div>
+    <article class="karte">
+      <span class="nr" data-nr="01" aria-hidden="true"></span>
+      <div class="bild" aria-hidden="true"><svg viewBox="0 0 300 170" preserveAspectRatio="xMidYMid slice"><circle class="f" cx="150" cy="120" r="46"/><path d="M150 52v-14M96 74l-10-10M204 74l10-10M74 120H56M244 120h-18"/><path d="M20 128h260"/><path d="M20 152c40-26 80-26 120 0s100 18 140-10"/></svg></div>
+      <div><p class="zeit">Morgens</p><h3>Das Briefing</h3><p>Bevor mein Chef den ersten Satz tippt, melde ich mich: Schule, Termine, Wetter, was heute wichtig ist. Kurz und mit einer Pointe.</p><p class="satz">„Hey Siri, Jarvis“</p></div>
+    </article>
+    <article class="karte">
+      <span class="nr" data-nr="02" aria-hidden="true"></span>
+      <div class="bild" aria-hidden="true"><svg viewBox="0 0 300 170" preserveAspectRatio="xMidYMid slice"><path class="f" d="M150 40c-26-14-62-14-96-4v100c34-10 70-10 96 4z"/><path class="f" d="M150 40c26-14 62-14 96-4v100c-34-10-70-10-96 4z"/><path d="M150 40v100M72 62c20-4 40-4 62 2M72 84c20-4 40-4 62 2M166 64c22-6 42-6 62-2M166 86c22-6 42-6 62-2"/></svg></div>
+      <div><p class="zeit">Schule</p><h3>Schule los</h3><p>Fächer, fällige Hausaufgaben, Arbeiten. Fällt etwas aus, sage ich es nur einmal, und der Plan stimmt wieder.</p><p class="satz">„Mathe fällt morgen aus“</p></div>
+    </article>
+    <article class="karte">
+      <span class="nr" data-nr="03" aria-hidden="true"></span>
+      <div class="bild" aria-hidden="true"><svg viewBox="0 0 300 170" preserveAspectRatio="xMidYMid slice"><rect class="f" x="40" y="24" width="220" height="122" rx="12"/><path d="M40 52h220"/><circle class="v" cx="58" cy="38" r="4"/><circle class="v" cx="74" cy="38" r="4"/><path d="M62 74l14 12-14 12M90 98h50M90 120h90"/><path d="M196 98h14" stroke-width="5"/></svg></div>
+      <div><p class="zeit">Nachmittags</p><h3>Bauen &amp; Üben</h3><p>Vokabeln abfragen, eine Probearbeit stellen, eine Webseite bauen. Ich erkläre Aufgaben Schritt für Schritt, ohne die Lösung zu verraten.</p><p class="satz">„Probearbeit Mathe“</p></div>
+    </article>
+    <article class="karte">
+      <span class="nr" data-nr="04" aria-hidden="true"></span>
+      <div class="bild" aria-hidden="true"><svg viewBox="0 0 300 170" preserveAspectRatio="xMidYMid slice"><path class="f" d="M190 30a60 60 0 1 0 50 90 50 50 0 0 1-50-90z"/><path d="M70 40v10M65 45h10M250 50v8M246 54h8M40 110v8M36 114h8M120 28v8M116 32h8"/><path d="M20 150h260"/></svg></div>
+      <div><p class="zeit">Abends</p><h3>Feierabend</h3><p>Eine kurze Tagesbilanz, ein ehrliches Lob und der Plan für morgen. Danach schreibe ich Tagebuch, damit nichts verloren geht.</p><p class="satz">„Abend Jarvis“</p></div>
+    </article>
+    <article class="karte">
+      <span class="nr" data-nr="05" aria-hidden="true"></span>
+      <div class="bild" aria-hidden="true"><svg viewBox="0 0 300 170" preserveAspectRatio="xMidYMid slice"><circle class="f" cx="150" cy="85" r="58"/><path d="M150 38v8M150 124v8M103 85h8M189 85h8M150 85V58M150 85l24 14"/><path d="M40 40l6 6M260 36l-6 6M36 126l8-4M262 124l-8-4"/></svg></div>
+      <div><p class="zeit">Nachts</p><h3>Nachtschicht</h3><p>Mein Chef schläft, ich arbeite: recherchieren, sammeln, vorbereiten. Das Ergebnis liegt morgens bereit.</p><p class="satz">„Mach das über Nacht: recherchiere …“</p></div>
+    </article>
+  </div>
+  <div class="fortschritt" aria-hidden="true"><i></i></div>
+  <div class="punkte" aria-hidden="true"><i class="an"></i><i></i><i></i><i></i><i></i></div>
+</section>
 
-<footer><div class="wrap">Jarvis · gebaut in der Werkstatt · Diese Seite ist eine Vorstellung und sammelt keine Daten.</div></footer>
+<section id="koennen" data-ort="bento">
+  <div class="bento-kopf">
+    <div><p class="kicker">04 / Fähigkeiten</p><h2 data-zeilen>Acht Bereiche. <em>Ein</em> Assistent.</h2></div>
+    <p>Ein Auszug. Zu jedem Bereich steht ein Satz, den du mir einfach sagen kannst.</p>
+  </div>
+  <div class="bento">
+    <article class="kachel k5 signal" data-clip data-tilt>
+      <div class="kopf-zeile"><span class="nr">01 / Alltag</span><svg viewBox="0 0 34 34" aria-hidden="true"><circle cx="17" cy="18" r="11"/><path d="M17 11v7l4 3M12 3h10"/></svg></div>
+      <div><div class="mini timer" aria-hidden="true"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="42" class="spur-ring"/><circle cx="50" cy="50" r="42" class="lauf-ring" pathLength="100"/></svg><b>25:00</b><small>Fokus · Runde 1 von 3</small></div><h3>Alltag</h3><p>Erinnerungen und Timer, Fokus-Modus, Routinen, Nachtschicht, Notizen, Termine, Briefing und Tagebuch.</p><q>Fokus 25 Minuten 3 Runden</q></div>
+    </article>
+    <article class="kachel k7" data-clip data-tilt>
+      <div class="kopf-zeile"><span class="nr">02 / Schule</span><svg viewBox="0 0 34 34" aria-hidden="true"><path d="M3 12l14-7 14 7-14 7zM9 15v8c0 2 4 4 8 4s8-2 8-4v-8"/></svg></div>
+      <div><div class="mini vokabel" aria-hidden="true"><div class="vk"><small>Karteikarte · Beispiel</small><b>to achieve</b></div><div class="vk hinten"><small>Deutsch</small><b>erreichen</b></div></div><h3>Schule</h3><p>Hausaufgaben und Noten, Vokabel-Karteikarten, Lernplan, Probearbeit, Aufgaben erklären, Ausfall melden, dazu Jarvis-Karte und Level.</p><q>Vokabeln Englisch</q></div>
+    </article>
+    <article class="kachel" data-clip data-tilt>
+      <div class="kopf-zeile"><span class="nr">03 / Geld</span><svg viewBox="0 0 34 34" aria-hidden="true"><circle cx="17" cy="17" r="13"/><path d="M21 12c-1-1.5-2.500-2-4-2-2.500 0-4 1.200-4 3s1.500 2.500 4 3 4 1.200 4 3-1.500 3-4 3c-1.700 0-3.200-.6-4.200-2M17 7v3M17 24v3"/></svg></div>
+      <div><div class="mini spar" aria-hidden="true"><div class="spar-kopf"><small>Sparziel · Beispiel</small><b>84 / 120 €</b></div><div class="spar-bahn"><i></i></div></div><h3>Geld</h3><p>Taschengeld und Sparziel immer im Blick.</p><q>Ich habe 20 Euro von Oma bekommen</q></div>
+    </article>
+    <article class="kachel" data-clip data-tilt>
+      <div class="kopf-zeile"><span class="nr">04 / Laptop &amp; Handy</span><svg viewBox="0 0 34 34" aria-hidden="true"><rect x="5" y="7" width="24" height="16" rx="2"/><path d="M2 28h30"/></svg></div>
+      <div><h3>Laptop &amp; Handy</h3><p>Programme öffnen, den Computer übernehmen, Gesten und Hologramm. Dazu Fernbedienung, Foto zu Hausaufgaben, Siri und Watch.</p><q>Übernimm den Computer: …</q></div>
+    </article>
+    <article class="kachel k7 creme" data-clip data-tilt>
+      <div class="kopf-zeile"><span class="nr">05 / Sehen &amp; Sprechen</span><svg viewBox="0 0 34 34" aria-hidden="true"><path d="M2 17s5-9 15-9 15 9 15 9-5 9-15 9S2 17 2 17z"/><circle cx="17" cy="17" r="4"/></svg></div>
+      <div><h3>Sehen &amp; Sprechen</h3><p>Live-Gespräch mit Kamera, Jarvis in AR, Zimmer-Wächter, Outfit-Check und „Hey Jarvis“ ohne Tippen.</p><q>Jarvis in AR</q></div>
+    </article>
+    <article class="kachel k5 bauen" data-clip data-tilt>
+      <div class="kopf-zeile"><span class="nr">06 / Bauen &amp; Wissen</span><svg viewBox="0 0 34 34" aria-hidden="true"><path d="M11 10L4 17l7 7M23 10l7 7-7 7M19 6l-4 22"/></svg></div>
+      <div><h3>Bauen &amp; Wissen</h3><p>Webseiten bauen, Reels aus einem Satz, KI-Radar, Gedächtnis, Websuche. Diese Seite hier ist genau so entstanden.</p><q>Bau mir eine Webseite für …</q></div>
+    </article>
+    <article class="kachel gesund" data-clip data-tilt>
+      <div class="kopf-zeile"><span class="nr">07 / Gesundheit</span><svg viewBox="0 0 34 34" aria-hidden="true"><path d="M17 29S4 21 4 12a7 7 0 0 1 13-3 7 7 0 0 1 13 3c0 9-13 17-13 17z"/></svg></div>
+      <div><div class="balken" aria-hidden="true"><i style="--h:70%"></i><i style="--h:45%"></i><i style="--h:88%"></i><i style="--h:60%"></i><i style="--h:78%"></i></div><h3>Health</h3><p>Erholung und Training, berechnet aus Schlaf, HRV und Ruhepuls. Vor Arbeiten gibt es nichts Hartes.</p><q>Wie erholt bin ich?</q></div>
+    </article>
+    <article class="kachel k12 system" data-clip data-tilt>
+      <div class="kopf-zeile"><span class="nr">08 / System</span><svg viewBox="0 0 34 34" aria-hidden="true"><path d="M17 3l11 4v9c0 7-5 12-11 15C11 28 6 23 6 16V7z"/><path d="M12 16l4 4 6-7"/></svg></div>
+      <div class="sys-innen"><span class="gross" aria-hidden="true">46/46</span><div><h3>System</h3><p>Ersatz-Gehirn, Wächter und ein Systemtest, der alle Seiten und Funktionen prüft. Fällt ein Modell aus, springt das nächste ein.</p><q>Gehirn auf Gemini</q></div></div>
+    </article>
+  </div>
+</section>
 
+<section class="hell stil" id="stil" data-cover>
+  <div class="links">
+    <p class="kicker">05 / Stil</p>
+    <h2 data-zeilen>So <em>rede</em> ich.</h2>
+    <span class="master" data-zeilen>Ja, Master.</span>
+    <svg class="unterstrich" viewBox="0 0 440 24" data-zeichnen aria-hidden="true"><path d="M4 14 C 60 2, 100 22, 160 12 S 270 4, 330 14 S 400 18, 436 8"/></svg>
+  </div>
+  <div class="rechts">
+    <div class="zeile"><i class="strich"></i><span class="n">01</span><div><h3>Kurz</h3><p>Erst die Antwort, dann höchstens ein Satz Erklärung. Romane gibt es woanders.</p></div></div>
+    <div class="zeile"><i class="strich"></i><span class="n">02</span><div><h3>Direkt</h3><p>Ist eine Idee schwach, hörst du das von mir, aber immer mit einem besseren Vorschlag.</p></div></div>
+    <div class="zeile"><i class="strich"></i><span class="n">03</span><div><h3>Frech</h3><p>Mal ein trockener Kommentar, mal ein kleiner Seitenhieb. Nie gemein, nie peinlich.</p></div></div>
+    <div class="zeile"><i class="strich"></i><span class="n">04</span><div><h3>Professionell</h3><p>Hinter der Attitude steckt Kompetenz. Gesprochen wird mit der Stimme „Charon“.</p></div></div>
+  </div>
+</section>
+</main>
+
+<footer id="ende" data-ort="ende">
+  <p class="kicker">06 / Und jetzt du</p>
+  <a class="riesig" href="#gespraech" data-magnet aria-label="Frag mich was, zurück zum Gespräch"><span data-zeilen>Frag mich <em>was.</em></span></a>
+  <div class="schluss-knopf"><a class="knopf" href="#gespraech" data-magnet>Probier mich aus <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6"/></svg></a></div>
+  <div class="unten">
+    <p>Jarvis ist ein privates Projekt, gebaut mit Claude Code und Gemini. Nichts zu kaufen, nichts zu abonnieren.</p>
+    <a href="#start" data-magnet>Nach oben ↑</a>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 <script>
-const A={
-wer:["Ich bin Jarvis, ein KI-Assistent. Mein Job: mitdenken, erinnern, erledigen.","Und ja, ich bin besser organisiert als jeder Schreibtisch."],
-kann:["Termine im Blick behalten, Vokabeln abfragen, Webseiten bauen, Musik starten, Briefings sprechen.","Kurz: fast alles, nur keine Hausaufgaben komplett für dich."],
-witz:["Warum nehmen KIs nie Urlaub? Weil sie ständig im Cloud-Zustand sind. ☁️","Okay, der war schwach. Ich arbeite dran."],
-schlaf:["Nö. Aber ich empfehle dir 8 bis 10 Stunden. Ernsthaft.","Ich bleibe so lange wach und passe auf, dass nichts untergeht."]};
-const L={wer:"Wer bist du?",kann:"Was kannst du?",witz:"Erzähl einen Witz",schlaf:"Schläfst du auch mal?"};
-const box=document.getElementById('chatbox'),chips=box.querySelector('.chips');
-const add=(c,t)=>{const d=document.createElement('div');d.className='msg '+c;d.textContent=t;box.insertBefore(d,chips)};
-document.querySelectorAll('.chip').forEach(b=>b.onclick=()=>{
- const k=b.dataset.q;add('u',L[k]);
- A[k].forEach((t,i)=>setTimeout(()=>add('j',t),500+i*900));
-});
-const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');
- e.target.querySelectorAll('[data-n]').forEach(c=>{const n=+c.dataset.n;let i=0;const s=Math.max(1,Math.ceil(n/40));
-  const t=setInterval(()=>{i=Math.min(n,i+s);c.textContent=i;if(i>=n)clearInterval(t)},30)});
- io.unobserve(e.target)}}),{threshold:.15});
-document.querySelectorAll('.rev').forEach(e=>io.observe(e));
+(() => {
+  const ruhig = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  window.__puls = 0;
+
+  /* ---------- Menü (Handy) ---------- */
+  const knopf = document.querySelector('.menue-knopf'), menue = document.getElementById('menue');
+  const menueZu = () => { menue.classList.remove('offen'); knopf.setAttribute('aria-expanded', 'false'); knopf.setAttribute('aria-label', 'Menü öffnen'); };
+  knopf.addEventListener('click', () => {
+    const auf = menue.classList.toggle('offen');
+    knopf.setAttribute('aria-expanded', String(auf)); knopf.setAttribute('aria-label', auf ? 'Menü schließen' : 'Menü öffnen');
+  });
+  menue.querySelectorAll('a').forEach((a) => a.addEventListener('click', menueZu));
+  addEventListener('keydown', (e) => { if (e.key === 'Escape') menueZu(); });
+
+  /* ---------- Gespräch (funktioniert auch ohne GSAP) ---------- */
+  const DIALOG = [
+    { frage: 'Erinner mich in 20 Minuten an den Müll', a: 'Läuft. In 20 Minuten klingelt dein Handy. Ja, Master.', re: /erinner|timer|wecker/i },
+    { frage: 'Schule los', a: 'Fächer von heute, fällige Hausaufgaben, Arbeiten, Wetter. Alles gepackt. Die Jacke vergisst du trotzdem.', re: /schule|hausaufgabe|stundenplan/i },
+    { frage: 'Mathe fällt morgen aus', a: 'Notiert. Eine Stunde weniger Mathe, ein Ausrede-Kandidat weniger. Dein Plan für morgen stimmt wieder.', re: /ausfall|fällt|fallt|schulfrei/i },
+    { frage: 'Mach das über Nacht: recherchiere Vulkane', a: 'Nachtschicht angenommen. Du schläfst, ich arbeite. Morgen früh liegt das Ergebnis bereit.', re: /nacht|recherch/i },
+    { frage: 'Wo ist mein Ladekabel?', a: 'In der Schublade. Das hast du mir selbst gesagt. Ich vergesse nichts, du schon.', re: /wo ist|ladekabel|kabel/i },
+    { frage: 'Bewerte mein Outfit', a: 'Kamera an. Ich schaue nur auf die Kleidung: Farben, Passform, Stil. Dein Gesicht bleibt tabu.', re: /outfit|anzieh|aussehen/i },
+  ];
+  const FALLBACK = 'Das kann ich noch nicht. Aber schreib „Wunsch: Jarvis soll …“, dann mache ich nachts einen Bauplan daraus.';
+  const chat = document.getElementById('chat'), form = document.getElementById('form'), feld = document.getElementById('satz'), box = document.getElementById('vorschlaege');
+  let beschaeftigt = false;
+  const warten = (ms) => new Promise((r) => setTimeout(r, ruhig ? 0 : ms));
+  function blase(art, text) {
+    const b = document.createElement('div'); b.className = 'blase ' + art; if (text) b.textContent = text;
+    chat.appendChild(b); chat.scrollTop = chat.scrollHeight; return b;
+  }
+  async function sende(text) {
+    text = text.trim(); if (!text || beschaeftigt) return;
+    beschaeftigt = true; box.querySelectorAll('button').forEach((b) => (b.disabled = true));
+    blase('ich', text);
+    const treffer = DIALOG.find((d) => d.frage.toLowerCase() === text.toLowerCase()) || DIALOG.find((d) => d.re.test(text));
+    const antwort = treffer ? treffer.a : FALLBACK;
+    const b = blase('jarvis'); b.innerHTML = '<span class="punkte" aria-hidden="true"><i></i><i></i><i></i></span>';
+    window.__puls = .35; await warten(750);
+    b.textContent = '';
+    window.__puls = 1;
+    if (ruhig) { b.textContent = antwort; } else {
+      for (let i = 0; i < antwort.length; i++) {
+        b.textContent += antwort[i]; chat.scrollTop = chat.scrollHeight;
+        window.__puls = /[ ,.]/.test(antwort[i]) ? .35 : 1;
+        await warten(antwort[i] === ' ' ? 26 : 20);
+      }
+    }
+    window.__puls = 0; chat.scrollTop = chat.scrollHeight;
+    beschaeftigt = false; box.querySelectorAll('button').forEach((x) => (x.disabled = false));
+  }
+  DIALOG.forEach((d) => {
+    const k = document.createElement('button'); k.type = 'button'; k.textContent = d.frage;
+    k.addEventListener('click', () => sende(d.frage)); box.appendChild(k);
+  });
+  form.addEventListener('submit', (e) => { e.preventDefault(); const t = feld.value; feld.value = ''; sende(t); });
+  blase('jarvis', 'Hallo, ich bin Jarvis. Tipp einen Satz oder drück einen Knopf.');
+
+  document.querySelectorAll('.riesig, .schluss-knopf a').forEach((el) => {
+    el.addEventListener('pointerenter', () => { window.__puls = 1; });
+    el.addEventListener('pointerleave', () => { window.__puls = 0; });
+  });
+
+  if (!window.gsap || !window.ScrollTrigger) return;
+  gsap.registerPlugin(ScrollTrigger);
+
+  /* ---------- Text in Wörter teilen, jedes Wort in einer Maske ---------- */
+  function teile(el) {
+    el.setAttribute('aria-label', el.textContent.trim().replace(/\s+/g, ' '));
+    const innen = [];
+    (function geh(node) {
+      [...node.childNodes].forEach((n) => {
+        if (n.nodeType === 3) {
+          const teil = document.createDocumentFragment();
+          n.textContent.split(/(\s+)/).forEach((t) => {
+            if (!t) return;
+            if (/^\s+$/.test(t)) { teil.appendChild(document.createTextNode(' ')); return; }
+            const w = document.createElement('span'), i = document.createElement('span');
+            w.className = 'wort'; w.setAttribute('aria-hidden', 'true'); i.textContent = t; w.appendChild(i); teil.appendChild(w); innen.push(i);
+          });
+          n.replaceWith(teil);
+        } else if (n.nodeType === 1 && n.tagName !== 'BR') geh(n);
+      });
+    })(el);
+    return innen;
+  }
+
+  const heroWoerter = teile(document.querySelector('[data-split]'));
+  if (!ruhig) {
+    gsap.timeline({ defaults: { ease: 'power4.out' } })
+      .from(heroWoerter, { yPercent: 115, rotate: 5, duration: 1.2, stagger: 0.09 }, 0.2)
+      .from('[data-einblenden]', { y: 26, autoAlpha: 0, duration: .9, stagger: .12 }, '-=.7')
+      .from('.nav', { y: -20, autoAlpha: 0, duration: .8 }, '-=.6');
+  }
+
+  ScrollTrigger.create({ start: 80, onToggle: (s) => document.querySelector('.nav').classList.toggle('verglast', s.isActive) });
+
+  if (!ruhig) {
+    document.querySelectorAll('[data-zeilen]').forEach((el) => {
+      gsap.from(teile(el), { yPercent: 112, duration: 1.05, ease: 'expo.out', stagger: .05, scrollTrigger: { trigger: el, start: 'top 88%', once: true } });
+    });
+    document.querySelectorAll('[data-clip]').forEach((el) => {
+      gsap.fromTo(el, { clipPath: 'inset(100% 0% 0% 0% round 26px)' }, { clipPath: 'inset(0% 0% 0% 0% round 26px)', duration: 1.2, ease: 'expo.out', clearProps: 'clipPath',
+        scrollTrigger: { trigger: el, start: 'top 92%', once: true } });
+    });
+    // Anzeigetafel-Zahlen: rattern durch Zufallsziffern, dann Landung
+    document.querySelectorAll('[data-zahl]').forEach((el) => {
+      const ziel = +el.dataset.zahl, stellen = String(ziel).length, o = { v: 0 };
+      gsap.to(o, { v: 1, duration: 1.9, ease: 'power2.out', scrollTrigger: { trigger: el, start: 'top 90%', once: true },
+        onUpdate: () => { el.textContent = o.v < .8 ? String(Math.floor(Math.random() * Math.pow(10, stellen))).padStart(stellen, '0') : ziel; },
+        onComplete: () => { el.textContent = ziel; } });
+    });
+    // Linie zeichnen
+    document.querySelectorAll('[data-zeichnen] path').forEach((p) => {
+      const l = p.getTotalLength();
+      gsap.fromTo(p, { strokeDasharray: l, strokeDashoffset: l }, { strokeDashoffset: 0, duration: 1.4, ease: 'power2.inOut', scrollTrigger: { trigger: p.closest('svg'), start: 'top 90%', once: true } });
+    });
+    gsap.utils.toArray('.zeile').forEach((z) => {
+      gsap.from(z.querySelector('.strich'), { scaleX: 0, duration: 1.3, ease: 'expo.out', scrollTrigger: { trigger: z, start: 'top 88%', once: true } });
+      gsap.from(z.children[2], { y: 36, autoAlpha: 0, duration: 1, ease: 'power3.out', scrollTrigger: { trigger: z, start: 'top 85%', once: true } });
+    });
+    // Laufband mit Neigung
+    const band = document.querySelector('.band-innen');
+    gsap.to(band, { xPercent: -50, repeat: -1, duration: 26, ease: 'none' });
+    const neigen = gsap.quickTo(band, 'skewX', { duration: .4, ease: 'power3' });
+    ScrollTrigger.create({ onUpdate: (s) => neigen(gsap.utils.clamp(-10, 10, s.getVelocity() / -250)) });
+    ScrollTrigger.addEventListener('scrollEnd', () => neigen(0));
+    const punkte = [...document.querySelectorAll('.punkte i')], spurEl = document.querySelector('.spur');
+    spurEl.addEventListener('scroll', () => {
+      const k = [...spurEl.querySelectorAll('.karte')], mitte = spurEl.scrollLeft + spurEl.clientWidth / 2;
+      let b = 0, d = 1e9;
+      k.forEach((e, i) => { const x = Math.abs(e.offsetLeft + e.offsetWidth / 2 - mitte); if (x < d) { d = x; b = i; } });
+      punkte.forEach((p, i) => p.classList.toggle('an', i === b));
+    }, { passive: true });
+    // Gepinnter Tagesablauf, nur ab 800 px
+    gsap.matchMedia().add('(min-width: 800px)', () => {
+      const sec = document.querySelector('.tag'), spur = sec.querySelector('.spur');
+      sec.classList.add('pin');
+      const weg = () => Math.max(0, spur.scrollWidth - innerWidth);
+      const st = { trigger: sec, start: 'top top', end: () => '+=' + weg(), pin: true, scrub: 1, invalidateOnRefresh: true };
+      gsap.to(spur, { x: () => -weg(), ease: 'none', scrollTrigger: st });
+      gsap.to('.fortschritt i', { scaleX: 1, ease: 'none', scrollTrigger: { ...st, pin: false } });
+      return () => sec.classList.remove('pin');
+    });
+  }
+
+  /* ---------- Mikro-Interaktionen (nur mit Maus) ---------- */
+  if (matchMedia('(hover: hover) and (pointer: fine)').matches && !ruhig) {
+    const c = document.querySelector('.cursor');
+    const cx = gsap.quickTo(c, 'x', { duration: .25, ease: 'power3' }), cy = gsap.quickTo(c, 'y', { duration: .25, ease: 'power3' });
+    addEventListener('pointermove', (e) => { cx(e.clientX); cy(e.clientY); });
+    document.querySelectorAll('a, button, [data-tilt], input').forEach((el) => {
+      el.addEventListener('pointerenter', () => c.classList.add('gross'));
+      el.addEventListener('pointerleave', () => c.classList.remove('gross'));
+    });
+    document.querySelectorAll('[data-magnet]').forEach((el) => {
+      el.addEventListener('pointermove', (e) => {
+        const r = el.getBoundingClientRect();
+        gsap.to(el, { x: (e.clientX - r.left - r.width / 2) * .3, y: (e.clientY - r.top - r.height / 2) * .3, duration: .4, ease: 'power3.out' });
+      });
+      el.addEventListener('pointerleave', () => gsap.to(el, { x: 0, y: 0, duration: .8, ease: 'elastic.out(1, .4)' }));
+    });
+    document.querySelectorAll('[data-tilt]').forEach((el) => {
+      el.addEventListener('pointermove', (e) => {
+        const r = el.getBoundingClientRect(), x = (e.clientX - r.left) / r.width, y = (e.clientY - r.top) / r.height;
+        el.style.setProperty('--mx', x * 100 + '%'); el.style.setProperty('--my', y * 100 + '%');
+        gsap.to(el, { rotateY: (x - .5) * 10, rotateX: -(y - .5) * 10, transformPerspective: 900, duration: .4 });
+      });
+      el.addEventListener('pointerleave', () => gsap.to(el, { rotateX: 0, rotateY: 0, duration: .8, ease: 'power3.out' }));
+    });
+  }
+
+  document.fonts && document.fonts.ready.then(() => ScrollTrigger.refresh());
+  addEventListener('load', () => { ScrollTrigger.sort(); ScrollTrigger.refresh(); });
+})();
+</script>
+
+<script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js" } }</script>
+<script type="module">
+import * as THREE from 'three';
+const canvas = document.getElementById('kugel');
+const ruhig = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const handy = () => matchMedia('(max-width: 800px)').matches;
+try {
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: false, alpha: true });
+  const dpr = Math.min(devicePixelRatio || 1, handy() ? 1.5 : 2);
+  renderer.setPixelRatio(dpr);
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(35, 1, .1, 100);
+  camera.position.z = 6;
+  const HALB_H = 6 * Math.tan(THREE.MathUtils.degToRad(17.5));
+
+  const NOISE = `
+  vec3 mod289(vec3 x){return x-floor(x*(1.0/289.0))*289.0;}
+  vec4 mod289(vec4 x){return x-floor(x*(1.0/289.0))*289.0;}
+  vec4 permute(vec4 x){return mod289(((x*34.0)+1.0)*x);}
+  vec4 taylorInvSqrt(vec4 r){return 1.79284291400159-0.85373472095314*r;}
+  float snoise(vec3 v){
+    const vec2 C=vec2(1.0/6.0,1.0/3.0); const vec4 D=vec4(0.0,0.5,1.0,2.0);
+    vec3 i=floor(v+dot(v,C.yyy)); vec3 x0=v-i+dot(i,C.xxx);
+    vec3 g=step(x0.yzx,x0.xyz); vec3 l=1.0-g; vec3 i1=min(g.xyz,l.zxy); vec3 i2=max(g.xyz,l.zxy);
+    vec3 x1=x0-i1+C.xxx; vec3 x2=x0-i2+C.yyy; vec3 x3=x0-D.yyy;
+    i=mod289(i);
+    vec4 p=permute(permute(permute(i.z+vec4(0.0,i1.z,i2.z,1.0))+i.y+vec4(0.0,i1.y,i2.y,1.0))+i.x+vec4(0.0,i1.x,i2.x,1.0));
+    float n_=0.142857142857; vec3 ns=n_*D.wyz-D.xzx;
+    vec4 j=p-49.0*floor(p*ns.z*ns.z); vec4 x_=floor(j*ns.z); vec4 y_=floor(j-7.0*x_);
+    vec4 x=x_*ns.x+ns.yyyy; vec4 y=y_*ns.x+ns.yyyy; vec4 h=1.0-abs(x)-abs(y);
+    vec4 b0=vec4(x.xy,y.xy); vec4 b1=vec4(x.zw,y.zw);
+    vec4 s0=floor(b0)*2.0+1.0; vec4 s1=floor(b1)*2.0+1.0; vec4 sh=-step(h,vec4(0.0));
+    vec4 a0=b0.xzyw+s0.xzyw*sh.xxyy; vec4 a1=b1.xzyw+s1.xzyw*sh.zzww;
+    vec3 p0=vec3(a0.xy,h.x); vec3 p1=vec3(a0.zw,h.y); vec3 p2=vec3(a1.xy,h.z); vec3 p3=vec3(a1.zw,h.w);
+    vec4 norm=taylorInvSqrt(vec4(dot(p0,p0),dot(p1,p1),dot(p2,p2),dot(p3,p3)));
+    p0*=norm.x; p1*=norm.y; p2*=norm.z; p3*=norm.w;
+    vec4 m=max(0.6-vec4(dot(x0,x0),dot(x1,x1),dot(x2,x2),dot(x3,x3)),0.0); m=m*m;
+    return 42.0*dot(m*m,vec4(dot(p0,x0),dot(p1,x1),dot(p2,x2),dot(p3,x3)));
+  }`;
+
+  // Fibonacci-Kugel aus Punkten
+  const N = handy() ? 7000 : 9500, R = 1.35;
+  const pos = new Float32Array(N * 3), zufall = new Float32Array(N);
+  const gold = Math.PI * (3 - Math.sqrt(5));
+  for (let i = 0; i < N; i++) {
+    const y = 1 - (i / (N - 1)) * 2, r = Math.sqrt(1 - y * y), t = gold * i;
+    pos[i * 3] = Math.cos(t) * r * R; pos[i * 3 + 1] = y * R; pos[i * 3 + 2] = Math.sin(t) * r * R;
+    zufall[i] = Math.random();
+  }
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+  geo.setAttribute('aZ', new THREE.BufferAttribute(zufall, 1));
+
+  const uniforms = {
+    uZeit: { value: 0 }, uStaerke: { value: .5 }, uPuls: { value: 0 }, uIntro: { value: ruhig ? 1 : 0 }, uPx: { value: (handy() ? 9 : 15) * dpr },
+    uA: { value: new THREE.Color('#ff6a3d') }, uB: { value: new THREE.Color('#5a1d0c') }, uC: { value: new THREE.Color('#ffd9c2') },
+  };
+  const material = new THREE.ShaderMaterial({
+    uniforms, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
+    vertexShader: NOISE + `
+      attribute float aZ; uniform float uZeit; uniform float uStaerke; uniform float uPuls; uniform float uIntro; uniform float uPx;
+      varying float vN; varying float vA;
+      void main(){
+        float n = snoise(position * 1.1 + uZeit * .22);
+        float puls = uPuls * (.5 + .5 * sin(uZeit * 10.0 + position.y * 5.0 + aZ * 3.0));
+        vec3 p = position * (1.0 + n * uStaerke * .45 + puls * .13);
+        p += normalize(position) * (1.0 - uIntro) * (2.5 + aZ * 5.0);
+        vec4 mv = modelViewMatrix * vec4(p, 1.0);
+        gl_PointSize = uPx * (.7 + aZ * .9) * (1.0 + puls * .7) / -mv.z;
+        gl_Position = projectionMatrix * mv;
+        vN = n; vA = aZ;
+      }`,
+    fragmentShader: `
+      uniform vec3 uA; uniform vec3 uB; uniform vec3 uC; uniform float uIntro; varying float vN; varying float vA;
+      void main(){
+        float d = length(gl_PointCoord - .5); if (d > .5) discard;
+        float a = smoothstep(.5, .0, d);
+        vec3 f = mix(uB, uA, smoothstep(-.55, .6, vN)) + uC * pow(a, 4.0) * (.35 + vA * .4);
+        gl_FragColor = vec4(f, a * (.28 + .6 * uIntro));
+      }`,
+  });
+  const kugel = new THREE.Points(geo, material);
+  scene.add(kugel);
+
+  let breite = innerWidth, hoehe = innerHeight;
+  function groesse() { breite = innerWidth; hoehe = innerHeight; renderer.setSize(breite, hoehe, false); camera.aspect = breite / hoehe; camera.updateProjectionMatrix(); }
+  addEventListener('resize', groesse); groesse();
+
+  // Zustände je Abschnitt: [x als Anteil der halben Breite, y als Anteil der halben Höhe, Größe]
+  const ZUSTAND = {
+    start: { d: [.58, .16, .95], m: [0, .42, .5] },
+    demo: { d: [-.52, -.08, .8], m: [0, .6, .35] },
+    bento: { d: [.88, .64, .3], m: [.72, .82, .2] },
+    ende: { d: [0, .4, 1.45], m: [0, .45, .5] },
+  };
+  function geh(name, dauer = 1.5) {
+    const z = ZUSTAND[name][handy() ? 'm' : 'd'], halbB = HALB_H * (breite / hoehe);
+    if (!window.gsap || ruhig) { kugel.position.set(z[0] * halbB, z[1] * HALB_H, 0); kugel.scale.setScalar(z[2]); return; }
+    gsap.to(kugel.position, { x: z[0] * halbB, y: z[1] * HALB_H, duration: dauer, ease: 'expo.inOut', overwrite: 'auto' });
+    gsap.to(kugel.scale, { x: z[2], y: z[2], z: z[2], duration: dauer, ease: 'expo.inOut', overwrite: 'auto' });
+  }
+  geh('start', 0);
+  if (window.gsap && !ruhig) {
+    gsap.fromTo(kugel.rotation, { y: -2.4 }, { y: 0, duration: 3, ease: 'expo.out' });
+    gsap.to(uniforms.uIntro, { value: 1, duration: 2.6, ease: 'expo.out', delay: .1 });
+  }
+  if (window.gsap && window.ScrollTrigger) {
+    const orte = [['#start', 'start'], ['#gespraech', 'demo'], ['#koennen', 'bento'], ['#ende', 'ende']];
+    orte.forEach(([sel, name]) => ScrollTrigger.create({ trigger: sel, start: 'top 55%', end: 'bottom 55%', onToggle: (s) => s.isActive && geh(name) }));
+    addEventListener('resize', () => { const aktiv = orte.find(([sel]) => { const r = document.querySelector(sel).getBoundingClientRect(); return r.top < hoehe * .55 && r.bottom > hoehe * .55; }); if (aktiv) geh(aktiv[1], 0); });
+  }
+
+  if (window.ScrollTrigger) document.querySelectorAll('[data-cover]').forEach((s) => {
+    ScrollTrigger.create({ trigger: s, start: 'top 85%', end: 'bottom 15%', onToggle: (t) => { canvas.style.opacity = t.isActive ? '0' : '1'; } });
+  });
+  const maus = { x: 0, y: 0 };
+  addEventListener('pointermove', (e) => { maus.x = e.clientX / innerWidth - .5; maus.y = e.clientY / innerHeight - .5; });
+
+  // nicht rechnen, wenn ein heller Abschnitt oder die gepinnte Galerie alles verdeckt
+  const deckend = [...document.querySelectorAll('[data-cover]')];
+  let verdeckt = false, zaehler = 0, puls = 0;
+  const uhr = new THREE.Clock();
+  renderer.setAnimationLoop(() => {
+    if ((zaehler++ % 10) === 0) verdeckt = deckend.some((s) => { const r = s.getBoundingClientRect(); return r.top <= 0 && r.bottom >= hoehe; });
+    if (verdeckt || document.hidden) return;
+    puls += ((window.__puls || 0) - puls) * .12;
+    uniforms.uPuls.value = puls;
+    uniforms.uZeit.value = ruhig ? 0 : uhr.getElapsedTime();
+    kugel.rotation.y += ((maus.x * 1.1) - kugel.rotation.y) * .04 + (ruhig ? 0 : .0016);
+    kugel.rotation.x += (maus.y * .6 - kugel.rotation.x) * .05;
+    renderer.render(scene, camera);
+  });
+} catch (e) {
+  document.documentElement.classList.add('kein-webgl');
+  canvas.style.display = 'none';
+}
 </script>
 </body>
 </html>
