@@ -1,0 +1,489 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Jarvis · Der KI-Butler von Ben-Vincent</title>
+<meta name="description" content="Jarvis ist der persönliche KI-Assistent von Ben-Vincent: Butler mit Attitude, 46 Fähigkeiten, eine leuchtende Partikel-Kugel. Hier kannst du ihn ausprobieren.">
+<meta name="theme-color" content="#0e0b09">
+<meta property="og:title" content="Jarvis · Ja, Master.">
+<meta property="og:description" content="Ein KI-Butler mit Attitude, gebaut von Ben-Vincent mit Claude Code und Gemini.">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230e0b09'/%3E%3Ccircle cx='16' cy='16' r='8' fill='%23ee6a3b'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;600&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<!--
+  KONZEPT-BRIEFING
+  Ziel: Jarvis stellt sich vor. Der Besucher soll in drei Sekunden merken: Das ist ein Butler mit Charakter, kein Chatbot-Prospekt.
+  Zielgruppe: Gleichaltrige, Lehrer, Eltern, Leute, die Ben-Vincents Projekt sehen wollen.
+  Inhalte: Hero "Ja, Master.", Manifest (gebaut, nicht gekauft), klickbare Mini-Demo, 11 Bereiche mit 46 Fähigkeiten,
+  zwei Tonlagen, Gesicht/Stimme/Hände als Bento, ein Tag mit Jarvis, Schluss.
+
+  ART DIRECTION: "Das Dienstbuch" (Butler-Editorial: Terrakotta auf Nacht und Papier, große kursive Serifen, Mono-Beschriftungen wie Einträge im Dienstbuch)
+  DREI ADJEKTIVE: trocken, warm, präzise
+  SIGNATURE-MOMENT: Jarvis' Partikel-Kugel ist ein einziges 3D-Objekt, das beim Scrollen mitreist, sich in einen Ring verwandelt
+  und auf deine Eingabe in der Mini-Demo reagiert (hört zu, denkt, antwortet). Dazu eine echte, zustandsbehaftete Konsole.
+  Übernommene Bausteine: 1 Wort-Masken-Intro, 3 horizontale Galerie, 4 Three.js (hier als Partikel-Kugel), 5 Partikel-Wort, 6 Cursor/Magnet/Neigung, 8 Laufband, 11 Hintergrundwechsel.
+-->
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <symbol id="i-alltag" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+    <symbol id="i-schule" viewBox="0 0 24 24"><path d="M4 5.5C4 4.7 4.7 4 5.5 4H11v15H5.5c-.8 0-1.500-.7-1.500-1.500z"/><path d="M20 5.500c0-.8-.7-1.500-1.500-1.500H13v15h5.500c.8 0 1.500-.7 1.500-1.500z"/></symbol>
+    <symbol id="i-laptop" viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="11" rx="1.500"/><path d="M2.500 19h19"/></symbol>
+    <symbol id="i-daumen" viewBox="0 0 24 24"><path d="M7 11v8H4v-8zM7 11l4-7c1.500 0 2.300 1 2 2.500L12.600 10H18a2 2 0 0 1 2 2.300l-1 5.500a2 2 0 0 1-2 1.700H7"/></symbol>
+    <symbol id="i-geld" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M14.500 9c-.5-.9-1.400-1.300-2.500-1.300-1.400 0-2.400.8-2.400 1.800 0 2.500 5 1.200 5 3.800 0 1-1.100 1.900-2.600 1.900-1.200 0-2.100-.5-2.600-1.400M12 6v1.700M12 16.300V18"/></symbol>
+    <symbol id="i-handy" viewBox="0 0 24 24"><rect x="7" y="2.500" width="10" height="19" rx="2.500"/><path d="M11 18.500h2"/></symbol>
+    <symbol id="i-auge" viewBox="0 0 24 24"><path d="M2 12s3.600-6.500 10-6.500S22 12 22 12s-3.600 6.500-10 6.500S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></symbol>
+    <symbol id="i-medien" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M10.500 9.500v5l4-2.500z"/></symbol>
+    <symbol id="i-bauen" viewBox="0 0 24 24"><path d="M8 8l-4 4 4 4M16 8l4 4-4 4M13.500 5l-3 14"/></symbol>
+    <symbol id="i-gesund" viewBox="0 0 24 24"><path d="M3 12h4l2-5 4 10 2-5h6"/></symbol>
+    <symbol id="i-system" viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 4.500-3.300 7.800-8 9-4.700-1.200-8-4.500-8-9V6z"/><path d="M9 12l2 2 4-4"/></symbol>
+  </defs>
+</svg>
+<div class="koernung" aria-hidden="true"></div>
+<div class="cursor" aria-hidden="true"></div>
+<canvas id="orb" aria-hidden="true"></canvas>
+
+<header class="nav" id="nav">
+  <a class="marke" href="#hero" aria-label="Jarvis, zum Anfang"><i></i>Jarvis</a>
+  <nav class="nav-links" aria-label="Hauptnavigation">
+    <a href="#konsole" data-magnet>Ausprobieren</a>
+    <a href="#bereiche" data-magnet>Fähigkeiten</a>
+    <a href="#ton" data-magnet>Ton</a>
+    <a href="#tag" data-magnet>Ein Tag</a>
+  </nav>
+  <button class="menue-knopf" id="menueKnopf" aria-expanded="false" aria-controls="menue" aria-label="Menü öffnen"><span></span></button>
+</header>
+<nav class="menue" id="menue" aria-label="Menü">
+  <a href="#konsole"><span>01</span>Ausprobieren</a>
+  <a href="#bereiche"><span>02</span>Fähigkeiten</a>
+  <a href="#ton"><span>03</span>Ton</a>
+  <a href="#tag"><span>04</span>Ein Tag</a>
+</nav>
+
+<main>
+  <!-- ===== HERO ===== -->
+  <section class="hero dunkel" id="hero" data-hintergrund="#0e0b09" data-orb="0.68,0.42,0.62,0,0.75,0" data-orb-m="0,-0.28,0.42,0,0.5,0">
+    <div class="hero-kopf">
+      <span>Persönlicher KI-Assistent <b>/</b> Baujahr 2026</span>
+      <span>Stimme: Charon <b>/</b> Läuft auf Windows und iPhone</span>
+    </div>
+    <div class="hero-titel">
+      <h1 data-split>Ja, Master.</h1>
+      <div class="hero-unten">
+        <div>
+          <p class="sagt" aria-live="off">Jarvis sagt gerade: <q id="wechsel">Ja, Master.</q></p>
+          <p class="lead" data-einblenden>Ich bin Jarvis, der Butler von Ben-Vincent. <span>Ich erinnere, erkläre, öffne, baue und kommentiere trocken. Gebaut mit Claude Code und Gemini, nicht gekauft.</span></p>
+        </div>
+        <div class="hero-knoepfe" data-einblenden>
+          <a class="knopf" href="#konsole" data-magnet>Sag ihm was <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+          <a class="knopf geist" href="#bereiche" data-magnet>46 Fähigkeiten</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="band" aria-hidden="true"><div class="band-innen"><span>Erinnern</span><span>Erklären</span><span>Öffnen</span><span>Merken</span><span>Bauen</span><span>Vorlesen</span><span>Aufpassen</span><span>Kommentieren</span><span>Erinnern</span><span>Erklären</span><span>Öffnen</span><span>Merken</span><span>Bauen</span><span>Vorlesen</span><span>Aufpassen</span><span>Kommentieren</span></div></div>
+
+  <!-- ===== MANIFEST ===== -->
+  <section class="manifest hell" id="manifest" data-hintergrund="#f3ece1" data-orb="-0.72,-0.25,0.5,1,0.55,1" data-orb-m="0.55,-0.55,0.4,1,0.3,1">
+    <p class="kicker">01 / Das Dienstbuch</p>
+    <div class="manifest-kopf">
+      <h2 data-zeilen>Kein Produkt. Ein <em>Mitarbeiter.</em></h2>
+      <div class="manifest-text" data-clip-text>
+        <p>Jarvis gibt es nirgends zu kaufen. Ben-Vincent hat ihn mit 13 selbst gebaut, Teil für Teil, mit Claude Code und Gemini.</p>
+        <p>Er beschreibt, was er will. Jarvis setzt es um: auf dem Laptop, auf dem iPhone, in Echtzeit, mit Attitude.</p>
+      </div>
+    </div>
+    <ol class="drei">
+      <li><span class="nr">01</span><h3>Das Gehirn</h3><p>Kennt Ben-Vincents Welt: Schule, Termine, Projekte, bevor er fragt.</p></li>
+      <li><span class="nr">02</span><h3>Die Stimme</h3><p>Redet in Echtzeit mit ihm und meldet sich morgens mit einem Briefing.</p></li>
+      <li><span class="nr">03</span><h3>Die Hand</h3><p>Übernimmt Aufgaben nacheinander. Jede erledigte Aufgabe bringt Zeit zurück.</p></li>
+    </ol>
+    <div class="zahlen">
+      <div class="zahl-block"><span class="zahl" data-zahl="46">46</span><p>Fähigkeiten</p></div>
+      <div class="zahl-block"><span class="zahl" data-zahl="11">11</span><p>Bereiche</p></div>
+      <div class="zahl-block"><span class="zahl" data-zahl="2">2</span><p>Geräte: Laptop und iPhone</p></div>
+      <div class="zahl-block"><span class="zahl" data-zahl="0">0</span><p>Euro zum Kaufen</p></div>
+    </div>
+  </section>
+
+  <!-- ===== KONSOLE ===== -->
+  <section class="konsole dunkel" id="konsole" data-hintergrund="#0e0b09" data-orb="-0.62,0.05,0.85,0,0.2,0" data-orb-m="0,-0.7,0.45,0,0.15,0">
+    <div class="konsole-raster">
+      <div>
+        <p class="kicker">02 / Ausprobieren</p>
+        <h2 data-zeilen>Sag ihm was. Er <em>antwortet.</em></h2>
+        <p class="einl">Das ist eine kleine Demo im Browser. Sie merkt sich, was du sagst, und zählt wirklich runter. Der echte Jarvis kann viel mehr.</p>
+        <div class="chips" id="chips" role="group" aria-label="Beispielsätze">
+          <button class="chip" type="button">Erinner mich in 1 Minute an den Müll</button>
+          <button class="chip" type="button">Fokus 25 Minuten 3 Runden</button>
+          <button class="chip" type="button">Notier dir Milch kaufen</button>
+          <button class="chip" type="button">Ich habe 20 Euro von Oma bekommen</button>
+          <button class="chip" type="button">Mein Ladekabel liegt in der Schublade</button>
+          <button class="chip" type="button">Wo ist mein Ladekabel?</button>
+          <button class="chip" type="button">Vokabeln Englisch</button>
+          <button class="chip" type="button">Kannst du Gedanken lesen?</button>
+        </div>
+        <p class="tipp-strg">Oder tipp selbst: <kbd>Strg</kbd> + <kbd>K</kbd> bringt dich von überall hierher.</p>
+      </div>
+      <div>
+        <div class="handy" data-tilt>
+          <div class="bildschirm">
+            <div class="h-kopf" id="hKopf"><div class="kugel"></div><div><b>Jarvis</b><small id="hStatus">bereit</small></div></div>
+            <div class="verlauf" id="verlauf" role="log" aria-live="polite" aria-label="Gespräch mit Jarvis"></div>
+            <div class="widgets" aria-label="Zustand der Demo">
+              <div class="widget" id="wTimer"><small>Timer</small><b>–</b></div>
+              <div class="widget" id="wTodo"><small>To-dos</small><b>0</b></div>
+              <div class="widget" id="wGeld"><small>Taschengeld</small><b>0,00 €</b></div>
+              <div class="widget" id="wWunsch"><small>Wunschbox</small><b>0</b></div>
+            </div>
+            <form class="eingabe" id="eingabe" autocomplete="off">
+              <label class="sr" for="eingabeFeld" style="position:absolute;left:-9999px">Nachricht an Jarvis</label>
+              <input id="eingabeFeld" type="text" placeholder="Sag Jarvis etwas …" enterkeyhint="send">
+              <button type="submit" aria-label="Senden"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+            </form>
+          </div>
+        </div>
+        <p class="demo-hinweis">Beispiel-Demo. Nichts wird gespeichert oder verschickt.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== BEREICHE ===== -->
+  <section class="horizontal hell" id="bereiche" data-hintergrund="#f3ece1" data-orb="0.82,0.78,0.3,1,0.35,1" data-orb-m="0.6,-0.7,0.35,1,0.25,1">
+    <div class="kopf">
+      <div><p class="kicker">03 / Fähigkeiten</p><h2 data-zeilen>Elf Bereiche, ein <em>Butler.</em></h2></div>
+      <p>Ein Auszug aus Jarvis' Dienstbuch. Zum Weiterblättern seitwärts scrollen.</p>
+    </div>
+    <div class="spur">
+      <article class="bereich">
+        <div class="b-kopf"><span>01 / 11</span><svg aria-hidden="true"><use href="#i-alltag"/></svg></div>
+        <h3>Alltag<small>12 Fähigkeiten</small></h3>
+        <ul><li>Erinnerungen und Timer</li><li>Fokus-Modus mit Runden</li><li>Routinen per Satz</li><li>Nachtschicht und Parallel-Aufträge</li><li>Wunschbox: Jarvis erweitert sich</li><li>Notizen, Kalender, Briefing, Tagebuch</li></ul>
+        <p class="b-satz">„Erinner mich in 20 Minuten an den Müll.“</p>
+      </article>
+      <article class="bereich">
+        <div class="b-kopf"><span>02 / 11</span><svg aria-hidden="true"><use href="#i-schule"/></svg></div>
+        <h3>Schule<small>7 Fähigkeiten</small></h3>
+        <ul><li>Ausfall melden</li><li>Hausaufgaben und Noten</li><li>Vokabeln und Karteikarten</li><li>Lernplan und Probearbeit</li><li>Aufgaben erklären, nie nur die Lösung</li><li>Schul-Check, Jarvis-Karte, Level</li></ul>
+        <p class="b-satz">„Probearbeit Mathe.“</p>
+      </article>
+      <article class="bereich hervor">
+        <div class="b-kopf"><span>03 / 11</span><svg aria-hidden="true"><use href="#i-laptop"/></svg></div>
+        <h3>Laptop<small>7 Fähigkeiten</small></h3>
+        <ul><li>Kommandozentrale und Strg+K</li><li>Programme, Webseiten, Musik</li><li>Computer-Vollsteuerung</li><li>Desktop-Kugel</li><li>Gestensteuerung, Hologramm-Modus</li><li>Cockpit, Bildschirm, Zwischenablage</li></ul>
+        <p class="b-satz">„Übernimm den Computer: …“</p>
+      </article>
+      <article class="bereich">
+        <div class="b-kopf"><span>04 / 11</span><svg aria-hidden="true"><use href="#i-daumen"/></svg></div>
+        <h3>Lernt dazu<small>Selbstlernend</small></h3>
+        <ul><li>Daumen hoch oder runter unter jeder Antwort</li><li>Aus Gründen werden Stil-Regeln</li><li>Jede Woche ein bisschen besser</li></ul>
+        <p class="b-satz">„Daumen runter. Zu brav.“</p>
+      </article>
+      <article class="bereich">
+        <div class="b-kopf"><span>05 / 11</span><svg aria-hidden="true"><use href="#i-geld"/></svg></div>
+        <h3>Geld<small>Taschengeld und Sparen</small></h3>
+        <ul><li>Einnahmen und Ausgaben notieren</li><li>Fortschritt zum Sparziel</li><li>Nur Notizen, nie Bankdaten</li></ul>
+        <p class="b-satz">„Ich habe 20 Euro von Oma bekommen.“</p>
+      </article>
+      <article class="bereich">
+        <div class="b-kopf"><span>06 / 11</span><svg aria-hidden="true"><use href="#i-handy"/></svg></div>
+        <h3>Handy<small>4 Fähigkeiten</small></h3>
+        <ul><li>Fernbedienung Plus für den Laptop</li><li>Foto → alles: Zettel, Tafel, Heft</li><li>Handy-Welt und Antwort-Knöpfe</li><li>Siri, Watch und Handy-Aktionen</li></ul>
+        <p class="b-satz">„Hey Siri, Jarvis.“</p>
+      </article>
+      <article class="bereich hervor">
+        <div class="b-kopf"><span>07 / 11</span><svg aria-hidden="true"><use href="#i-auge"/></svg></div>
+        <h3>Sehen und Sprechen<small>5 Fähigkeiten</small></h3>
+        <ul><li>Live-Gespräch mit Kamera</li><li>Jarvis in AR</li><li>Zimmer-Wächter</li><li>Outfit-Check, nur Kleidung</li><li>„Hey Jarvis“ am Laptop</li></ul>
+        <p class="b-satz">„Bewerte mein Outfit.“</p>
+      </article>
+      <article class="bereich">
+        <div class="b-kopf"><span>08 / 11</span><svg aria-hidden="true"><use href="#i-medien"/></svg></div>
+        <h3>Medien<small>Reel-Maschine</small></h3>
+        <ul><li>Skript, Stimme und Bilder in einem Rutsch</li><li>Fertiges Video bleibt lokal</li><li>Veröffentlichen entscheidet Ben-Vincent</li></ul>
+        <p class="b-satz">„Mach ein Reel über meinen Jarvis.“</p>
+      </article>
+      <article class="bereich">
+        <div class="b-kopf"><span>09 / 11</span><svg aria-hidden="true"><use href="#i-bauen"/></svg></div>
+        <h3>Bauen und Wissen<small>5 Fähigkeiten</small></h3>
+        <ul><li>Webseiten bauen (Werkstatt Pro)</li><li>KI-Radar und Moritz-Radar</li><li>Gedächtnis und Websuche</li><li>Jarvis-Welt</li><li>Diese Seite? Hat er gebaut.</li></ul>
+        <p class="b-satz">„Bau mir eine Webseite für …“</p>
+      </article>
+      <article class="bereich">
+        <div class="b-kopf"><span>10 / 11</span><svg aria-hidden="true"><use href="#i-gesund"/></svg></div>
+        <h3>Gesundheit<small>Health und Training</small></h3>
+        <ul><li>Erholung aus Schlaf, HRV, Ruhepuls</li><li>Trainingsstrecken je nach Form und Wetter</li><li>Keine medizinische Beratung</li></ul>
+        <p class="b-satz">„Wie erholt bin ich?“</p>
+      </article>
+      <article class="bereich">
+        <div class="b-kopf"><span>11 / 11</span><svg aria-hidden="true"><use href="#i-system"/></svg></div>
+        <h3>System<small>2 Fähigkeiten</small></h3>
+        <ul><li>Ersatz-Gehirn, wenn Claude im Limit ist</li><li>Wächter, der den Server am Leben hält</li><li>Systemtest und Aufbau im Blick</li></ul>
+        <p class="b-satz">„Gehirn auf Gemini.“</p>
+      </article>
+    </div>
+  </section>
+
+  <!-- ===== TON ===== -->
+  <section class="ton dunkel" id="ton" data-hintergrund="#0e0b09" data-orb="0,0,1.35,0,0.22,0" data-orb-m="0,0,1,0,0.2,0">
+    <div class="ton-kopf">
+      <div><p class="kicker">04 / Der Ton</p><h2 data-zeilen>Zwei Tonlagen. Eine <em>Persönlichkeit.</em></h2></div>
+      <p class="ton-hinweis"><span class="maus">Fahr mit dem Licht über die Sätze.</span><span class="touch">Tipp einen Satz an.</span> Darunter steckt, was Jarvis wirklich sagt.</p>
+    </div>
+    <div class="ton-liste">
+      <div class="ton-karte" tabindex="0" role="button" aria-label="Satz aufdecken: Hausaufgabe">
+        <div class="hoeflich"><small>Höflich</small>Deine Hausaufgabe ist noch nicht erledigt.</div>
+        <div class="jarvis-satz"><small>Jarvis</small>Mathe-Arbeit in 14 Tagen. Ich sage nur: <em>Vokabeln.</em></div>
+      </div>
+      <div class="ton-karte" tabindex="0" role="button" aria-label="Satz aufdecken: Schlafenszeit">
+        <div class="hoeflich"><small>Höflich</small>Es ist bereits 23 Uhr. Bitte gehe schlafen.</div>
+        <div class="jarvis-satz"><small>Jarvis</small>Es ist 23 Uhr, Master. Der Bildschirm leuchtet auch <em>morgen</em> noch.</div>
+      </div>
+      <div class="ton-karte" tabindex="0" role="button" aria-label="Satz aufdecken: Wunschbox">
+        <div class="hoeflich"><small>Höflich</small>Diese Funktion ist leider nicht verfügbar.</div>
+        <div class="jarvis-satz"><small>Jarvis</small>Kann ich noch nicht. Ab in die <em>Wunschbox.</em> Nachts baue ich daran.</div>
+      </div>
+      <div class="ton-karte" tabindex="0" role="button" aria-label="Satz aufdecken: Dank">
+        <div class="hoeflich"><small>Höflich</small>Sehr gern geschehen, es war mir eine Freude.</div>
+        <div class="jarvis-satz"><small>Jarvis</small>Immer, <em>Master.</em> Ist mein Job, nicht mein Hobby.</div>
+      </div>
+    </div>
+    <p class="ton-regel">Beispielsätze. Nie gemein. Nie peinlich. Immer kompetent.</p>
+  </section>
+
+  <!-- ===== BENTO ===== -->
+  <section class="bento hell" id="koerper" data-hintergrund="#f3ece1" data-orb="0.85,-0.75,0.4,1,0.3,1" data-orb-m="0.6,-0.8,0.35,1,0.2,1">
+    <p class="kicker">05 / Gesicht, Stimme, Hände</p>
+    <h2 data-zeilen>Was man an ihm <em>sieht.</em></h2>
+    <div class="bento-raster">
+      <article class="tile orange t-kugel" data-tilt>
+        <div class="hud" aria-hidden="true">
+          <svg viewBox="0 0 400 400" fill="none" stroke="#1a0b05" stroke-width="1.2">
+            <circle cx="200" cy="200" r="70" fill="#1a0b05" stroke="none"/>
+            <circle cx="200" cy="200" r="70" fill="url(#kg)" stroke="none"/>
+            <g class="hud-ring"><circle cx="200" cy="200" r="130" stroke-dasharray="4 10"/><circle cx="200" cy="70" r="6" fill="#1a0b05"/></g>
+            <g class="hud-ring zwei"><circle cx="200" cy="200" r="178" stroke-dasharray="1 7"/><circle cx="378" cy="200" r="4" fill="#1a0b05"/><circle cx="22" cy="200" r="4" fill="#1a0b05"/></g>
+            <defs><radialGradient id="kg" cx="35%" cy="30%"><stop offset="0" stop-color="#ffd2b8"/><stop offset=".5" stop-color="#ee6a3b"/><stop offset="1" stop-color="#7d2a0c"/></radialGradient></defs>
+          </svg>
+        </div>
+        <p class="kicker">Sein Gesicht</p>
+        <div class="text"><h3>Eine leuchtende Kugel aus Partikeln.</h3><p>Sie zeigt, was Jarvis tut: ruhig, zuhören, denken, sprechen. Auf dem Desktop schwebt sie sogar oben mittig, wenn man will.</p></div>
+      </article>
+      <article class="tile t-stimme" data-tilt>
+        <p class="kicker">Seine Stimme</p>
+        <div class="wellen" id="wellen" aria-hidden="true"></div>
+        <div><h3>Charon.</h3><p>Spricht in Echtzeit, professionell mit dezentem Humor. Auch mit Kamera.</p></div>
+      </article>
+      <article class="tile papier t-brief" data-tilt>
+        <p class="kicker">Sein Morgen</p>
+        <div class="mitteilung"><i></i><b>Jarvis <time>06:45</time></b><span>Guten Morgen. Dein Briefing ist da: Schule, Kalender, Wetter, eine Pointe.</span></div>
+        <p>Jeden Morgen ein frecher 30-Sekunden-Monolog aufs iPhone. Beispieltext.</p>
+      </article>
+      <article class="tile t-laptop" data-tilt>
+        <p class="kicker">Seine Zentrale</p>
+        <div class="fenster" aria-hidden="true"><div class="fenster-kopf"><i></i><i></i><i></i></div><div class="fenster-innen"><div class="such"><kbd>Strg</kbd><kbd>K</kbd> Was darf's sein?</div><div class="an">Tagesplan öffnen</div><div>Timer 10 Minuten</div><div>Webseite bauen</div></div></div>
+        <div><h3>Ein Cockpit für Windows.</h3><p>Kommandozentrale mit Partikel-Kugel, Befehlsfenster und Live-Zahlen.</p></div>
+      </article>
+      <article class="tile papier t-daumen">
+        <p class="kicker">Er lernt</p>
+        <p class="daumen-bsp"><small>Jarvis sagt</small>„Mathe wartet. Mathe wartet immer.“</p>
+        <div class="daumen-reihe"><button type="button" id="daumenHoch" aria-label="Daumen hoch"><svg aria-hidden="true"><use href="#i-daumen"/></svg></button><button type="button" id="daumenRunter" aria-label="Daumen runter"><svg aria-hidden="true"><use href="#i-daumen"/></svg></button></div>
+        <p class="daumen-antwort" id="daumenAntwort" aria-live="polite">Probier einen Daumen.</p>
+      </article>
+      <article class="tile t-gehirn">
+        <p class="kicker">Ersatz-Gehirn</p>
+        <div class="schalter"><strong id="gehirnName">Claude</strong><button type="button" role="switch" aria-checked="false" id="gehirnSchalter" aria-label="Gehirn wechseln"></button></div>
+        <p id="gehirnText">Jarvis denkt mit Claude.</p>
+      </article>
+      <article class="tile t-null">
+        <span class="gross" aria-hidden="true" data-zahl="0">0</span>
+        <div><h3>Euro. Nichts zu kaufen.</h3><p>Gebaut, nicht gekauft. Von einem 13-Jährigen mit sehr gutem Mitarbeiter.</p></div>
+      </article>
+    </div>
+  </section>
+
+  <!-- ===== EIN TAG ===== -->
+  <section class="tag dunkel" id="tag" data-hintergrund="#0e0b09" data-orb="-0.55,0.3,0.7,0,0.3,0" data-orb-m="0.4,-0.6,0.5,0,0.15,0">
+    <p class="kicker">06 / Ein Tag mit Jarvis</p>
+    <h2 data-zeilen>Er meldet sich <em>von selbst.</em></h2>
+    <div class="tag-raster">
+      <div class="tag-stern">
+        <div class="uhr" id="uhr" aria-live="off">06:45</div>
+        <p class="uhr-label" id="uhrLabel">Morgen-Briefing</p>
+        <svg class="bogen" viewBox="0 0 400 220" aria-hidden="true">
+          <path class="grund" d="M20 200 C 90 -30, 310 -30, 380 200"/>
+          <path class="weg" id="bogenWeg" d="M20 200 C 90 -30, 310 -30, 380 200"/>
+          <circle class="punkt" id="bogenPunkt" r="7" cx="20" cy="200"/>
+          <text x="20" y="218">06:45</text><text x="352" y="218">22:30</text>
+        </svg>
+        <p class="tag-fuss">Beispiel-Tag eines Schülers</p>
+      </div>
+      <div class="schritte">
+        <article class="schritt jetzt" data-zeit="06:45" data-label="Morgen-Briefing">
+          <span class="zeit">06:45</span><h3>Morgen-Briefing</h3><p>Schule, Kalender, Lernblock, Wetter und eine Pointe. Mo bis Fr aufs iPhone, auf Wunsch laut als Wecker.</p>
+        </article>
+        <article class="schritt" data-zeit="07:30" data-label="Schule los">
+          <span class="zeit">07:30</span><h3>Schule los</h3><p>Fächer, fällige Hausaufgaben, Arbeit in Sicht, Wetter und Jacke. Ein Satz, mehrere Schritte.</p><p class="satz">„Schule los.“</p>
+        </article>
+        <article class="schritt" data-zeit="15:30" data-label="Hausaufgaben-Erinnerung">
+          <span class="zeit">15:30</span><h3>Hausaufgaben-Check</h3><p>Alles, was morgen fällig ist, kommt als Mitteilung. Mit Knöpfen zum Abhaken.</p>
+        </article>
+        <article class="schritt" data-zeit="16:00" data-label="Bauzeit">
+          <span class="zeit">16:00</span><h3>Bauzeit</h3><p>Jetzt wird gebaut: Webseiten, Apps, Jarvis selbst. Er schreibt, Ben-Vincent entscheidet.</p><p class="satz">„Bau mir eine Webseite für …“</p>
+        </article>
+        <article class="schritt" data-zeit="19:30" data-label="Schultasche-Check">
+          <span class="zeit">19:30</span><h3>Schultasche-Check</h3><p>Die Fächer von morgen, Sportsachen, Hausaufgaben, Arbeiten. Nichts bleibt zu Hause.</p>
+        </article>
+        <article class="schritt" data-zeit="21:30" data-label="Tagebuch">
+          <span class="zeit">21:30</span><h3>Tagebuch</h3><p>Jarvis schreibt den Tag auf: Gespräche, Erledigtes, Termine. Frag später nach einem Dienstag.</p><p class="satz">„Was habe ich am Dienstag gemacht?“</p>
+        </article>
+        <article class="schritt" data-zeit="22:30" data-label="Nachtschicht">
+          <span class="zeit">22:30</span><h3>Nachtschicht</h3><p>Ben-Vincent schläft, Jarvis recherchiert. Morgens liegt das Ergebnis bereit.</p><p class="satz">„Mach das über Nacht: recherchiere …“</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== ENDE ===== -->
+  <section class="ende dunkel" id="ende" data-hintergrund="#0e0b09" data-orb="0.8,-0.55,0.55,0,0.5,0" data-orb-m="0.6,-0.7,0.35,0,0.25,0">
+    <p class="kicker">07 / Schluss</p>
+    <h2 data-zeilen>Und jetzt <em>du.</em></h2>
+    <div class="partikel"><canvas id="partikel" aria-label="Das Wort Jarvis aus Partikeln, die vor der Maus fliehen"></canvas></div>
+    <div class="ende-reihe">
+      <p>Frag ihn etwas. Oder sag einfach: „Ja, Master.“ Er wird es trocken kommentieren.</p>
+      <div class="knopf-reihe"><a class="knopf" href="#konsole" data-magnet>Zurück zur Demo <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div>
+    </div>
+    <div class="fuss"><span>Gebaut von Ben-Vincent mit Claude Code und Gemini</span><span>Diese Seite: Werkstatt Pro. Beispiele sind gekennzeichnet.</span></div>
+  </section>
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="main.js"></script>
+
+<!-- Three.js: Jarvis' Partikel-Kugel (reist beim Scrollen mit, wird zum Ring, reagiert auf die Demo) -->
+<script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js" } }</script>
+<script type="module">
+import * as THREE from 'three';
+try {
+  const canvas = document.getElementById('orb');
+  const O = window.JARVIS_ORB;
+  const handy = matchMedia('(max-width: 800px)').matches;
+  const ruhig = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: false, alpha: true });
+  renderer.setPixelRatio(Math.min(devicePixelRatio, handy ? 1.5 : 2));
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(35, 1, .1, 100);
+  camera.position.z = 7;
+  const halbH = Math.tan(THREE.MathUtils.degToRad(17.5)) * 7;
+
+  const N = handy ? 7000 : 16000;
+  const pos = new Float32Array(N * 3), ziel = new Float32Array(N * 3), zuf = new Float32Array(N);
+  for (let i = 0; i < N; i++) {
+    const y = 1 - (i + .5) / N * 2, r = Math.sqrt(1 - y * y), th = i * 2.399963, R = 1.25 * (.97 + Math.random() * .06);
+    pos.set([Math.cos(th) * r * R, y * R, Math.sin(th) * r * R], i * 3);
+    const a = Math.random() * Math.PI * 2, rr = 1.5 + (Math.random() - .5) * .3;
+    ziel.set([Math.cos(a) * rr, Math.sin(a) * rr * .3 + (Math.random() - .5) * .08, Math.sin(a) * rr * .9], i * 3);
+    zuf[i] = Math.random();
+  }
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+  geo.setAttribute('aZiel', new THREE.BufferAttribute(ziel, 3));
+  geo.setAttribute('aZufall', new THREE.BufferAttribute(zuf, 1));
+
+  const NOISE = `
+vec3 mod289(vec3 x){return x-floor(x*(1.0/289.0))*289.0;}
+vec4 mod289(vec4 x){return x-floor(x*(1.0/289.0))*289.0;}
+vec4 permute(vec4 x){return mod289(((x*34.0)+1.0)*x);}
+vec4 taylorInvSqrt(vec4 r){return 1.79284291400159-0.85373472095314*r;}
+float snoise(vec3 v){
+  const vec2 C=vec2(1.0/6.0,1.0/3.0); const vec4 D=vec4(0.0,0.5,1.0,2.0);
+  vec3 i=floor(v+dot(v,C.yyy)); vec3 x0=v-i+dot(i,C.xxx);
+  vec3 g=step(x0.yzx,x0.xyz); vec3 l=1.0-g; vec3 i1=min(g.xyz,l.zxy); vec3 i2=max(g.xyz,l.zxy);
+  vec3 x1=x0-i1+C.xxx; vec3 x2=x0-i2+C.yyy; vec3 x3=x0-D.yyy;
+  i=mod289(i);
+  vec4 p=permute(permute(permute(i.z+vec4(0.0,i1.z,i2.z,1.0))+i.y+vec4(0.0,i1.y,i2.y,1.0))+i.x+vec4(0.0,i1.x,i2.x,1.0));
+  float n_=0.142857142857; vec3 ns=n_*D.wyz-D.xzx;
+  vec4 j=p-49.0*floor(p*ns.z*ns.z); vec4 x_=floor(j*ns.z); vec4 y_=floor(j-7.0*x_);
+  vec4 x=x_*ns.x+ns.yyyy; vec4 y=y_*ns.x+ns.yyyy; vec4 h=1.0-abs(x)-abs(y);
+  vec4 b0=vec4(x.xy,y.xy); vec4 b1=vec4(x.zw,y.zw);
+  vec4 s0=floor(b0)*2.0+1.0; vec4 s1=floor(b1)*2.0+1.0; vec4 sh=-step(h,vec4(0.0));
+  vec4 a0=b0.xzyw+s0.xzyw*sh.xxyy; vec4 a1=b1.xzyw+s1.xzyw*sh.zzww;
+  vec3 p0=vec3(a0.xy,h.x); vec3 p1=vec3(a0.zw,h.y); vec3 p2=vec3(a1.xy,h.z); vec3 p3=vec3(a1.zw,h.w);
+  vec4 norm=taylorInvSqrt(vec4(dot(p0,p0),dot(p1,p1),dot(p2,p2),dot(p3,p3)));
+  p0*=norm.x; p1*=norm.y; p2*=norm.z; p3*=norm.w;
+  vec4 m=max(0.6-vec4(dot(x0,x0),dot(x1,x1),dot(x2,x2),dot(x3,x3)),0.0); m=m*m;
+  return 42.0*dot(m*m,vec4(dot(p0,x0),dot(p1,x1),dot(p2,x2),dot(p3,x3)));
+}`;
+  const uniforms = {
+    uZeit: { value: 0 }, uMorph: { value: 0 }, uPuls: { value: 0 }, uOpa: { value: 1 }, uHell: { value: 0 },
+    uPx: { value: renderer.getPixelRatio() },
+    uA1: { value: new THREE.Color('#ffa77f') }, uB1: { value: new THREE.Color('#c44a1c') },
+    uA2: { value: new THREE.Color('#d2501f') }, uB2: { value: new THREE.Color('#7d2a0c') },
+  };
+  const material = new THREE.ShaderMaterial({
+    uniforms, transparent: true, depthWrite: false,
+    vertexShader: NOISE + `
+      attribute vec3 aZiel; attribute float aZufall;
+      uniform float uZeit; uniform float uMorph; uniform float uPuls; uniform float uPx; varying float vN; varying float vZ;
+      void main(){
+        vec3 p = mix(position, aZiel, uMorph);
+        vec3 dir = normalize(p + vec3(0.0001));
+        float n = snoise(dir * 1.4 + vec3(0.0, 0.0, uZeit * .25)) + snoise(p * 3.0 + uZeit * .4) * .22;
+        p += dir * n * (.2 + uPuls * .3 + uMorph * .08);
+        vec4 mv = modelViewMatrix * vec4(p, 1.0);
+        gl_Position = projectionMatrix * mv;
+        gl_PointSize = (1.5 + aZufall * 2.4 + uPuls * 1.6) * uPx * (8.0 / -mv.z);
+        vN = n; vZ = aZufall;
+      }`,
+    fragmentShader: `
+      uniform vec3 uA1; uniform vec3 uB1; uniform vec3 uA2; uniform vec3 uB2; uniform float uOpa; uniform float uHell; varying float vN; varying float vZ;
+      void main(){
+        float d = length(gl_PointCoord - .5); if (d > .5) discard;
+        vec3 A = mix(uA1, uA2, uHell); vec3 B = mix(uB1, uB2, uHell);
+        vec3 c = mix(B, A, smoothstep(-.5, .7, vN));
+        gl_FragColor = vec4(c, smoothstep(.5, .12, d) * uOpa * (.55 + vZ * .45));
+      }`,
+  });
+  const punkte = new THREE.Points(geo, material);
+  punkte.frustumCulled = false;
+  const gruppe = new THREE.Group();
+  gruppe.add(punkte);
+  scene.add(gruppe);
+
+  function groesse() { renderer.setSize(innerWidth, innerHeight, false); camera.aspect = innerWidth / Math.max(1, innerHeight); camera.updateProjectionMatrix(); }
+  addEventListener('resize', groesse); groesse();
+  const maus = { x: 0, y: 0, gx: 0, gy: 0 };
+  addEventListener('pointermove', (e) => { maus.x = e.clientX / innerWidth - .5; maus.y = e.clientY / innerHeight - .5; });
+  const c = { x: .5, y: .05, s: 1, m: 0, o: 0, h: 0 };
+  const uhr = new THREE.Clock();
+  renderer.setAnimationLoop(() => {
+    if (document.hidden) return;
+    const t = O.ziel;
+    for (const k in c) c[k] += (t[k] - c[k]) * .05;
+    if (c.o < .01) return;
+    const zeit = ruhig ? 0 : uhr.getElapsedTime();
+    maus.gx += (maus.x - maus.gx) * .05; maus.gy += (maus.y - maus.gy) * .05;
+    gruppe.position.set(c.x * halbH * camera.aspect, -c.y * halbH, 0);
+    gruppe.scale.setScalar(c.s);
+    gruppe.rotation.set(maus.gy * .5, zeit * .12 + maus.gx * .8 + scrollY * .0006, c.m * .35);
+    O.puls *= .94;
+    uniforms.uZeit.value = zeit;
+    uniforms.uMorph.value = c.m;
+    uniforms.uPuls.value = O.puls + O.hoer * .18 * (.5 + .5 * Math.sin(zeit * 7));
+    uniforms.uOpa.value = c.o;
+    uniforms.uHell.value = c.h;
+    renderer.render(scene, camera);
+  });
+} catch (err) {
+  const k = document.getElementById('orb'); if (k) k.remove();   // ohne WebGL bleibt die Seite voll nutzbar
+}
+</script>
+</body>
+</html>

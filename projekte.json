@@ -1,5 +1,12 @@
 [
  {
+  "slug": "jarvis-ja-master",
+  "titel": "Jarvis · Ja, Master.",
+  "beschreibung": "Vorstellungsseite für Jarvis, den KI-Butler von Ben-Vincent, mit mitreisender 3D-Partikel-Kugel, klickbarer Mini-Demo und 46 Fähigkeiten.",
+  "art": "Webseite",
+  "datum": "26.10.2026"
+ },
+ {
   "slug": "hi-ich-bin-jarvis",
   "titel": "Hi. Ich bin Jarvis.",
   "beschreibung": "Jarvis stellt sich selbst vor: eine 3D-Partikel-Kugel, die sich beim Scrollen verwandelt, mit Mini-Chat zum Ausprobieren.",
